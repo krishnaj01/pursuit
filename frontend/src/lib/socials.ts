@@ -5,11 +5,11 @@
 export const SOCIAL_LINKS = {
   github: 'https://github.com/krishnaj01',
   // TODO: the repository URL, once it's public.
-  repo: 'https://github.com/krishnaj01/job-tracking-platform',
+  repo: 'https://github.com/krishnaj01/pursuit',
   // TODO: your support link (GitHub Sponsors, Buy Me a Coffee, …).
   support: 'https://github.com/sponsors/krishnaj01',
   // TODO: your X profile.
-  x: 'https://x.com/your-handle',
+  x: 'https://x.com/krishna_jh01',
   // TODO: your portfolio website.
-  portfolio: 'https://your-portfolio.example',
+  portfolio: 'https://www.krishnajhanwar.tech/',
 } as const
