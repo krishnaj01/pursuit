@@ -44,6 +44,15 @@ async def test_full_application_lifecycle(client):
     assert body["next_reminder_on"] == interview_day.isoformat()
     assert body["reminder_kind"] == "event"
 
+    cached_logo = await client.patch(
+        f"/api/v1/applications/{app['id']}", json={"logo_url": "/api/v1/logos/image/stripe.com"}
+    )
+    assert cached_logo.json()["logo_url"] == "/api/v1/logos/image/stripe.com"
+    bad_logo = await client.patch(
+        f"/api/v1/applications/{app['id']}", json={"logo_url": "javascript:alert(1)"}
+    )
+    assert bad_logo.status_code == 422
+
     removed_logo = await client.patch(f"/api/v1/applications/{app['id']}", json={"logo_url": None})
     assert removed_logo.json()["logo_url"] is None
 

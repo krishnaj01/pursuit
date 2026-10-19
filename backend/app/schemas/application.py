@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import date, datetime
 from enum import StrEnum
@@ -15,9 +16,15 @@ Role = Annotated[str, Field(min_length=1, max_length=200)]
 Domain = Annotated[str, Field(max_length=255, pattern=r"^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
 
 
+CACHED_LOGO_PATH = re.compile(r"^/api/v1/logos/image/[a-zA-Z0-9.-]+$")
+
+
 def _clean_url(value: str | None) -> str | None:
+    """Accept an absolute http(s) image URL or a path to our own cached logo."""
     if value is None or value == "":
         return None
+    if CACHED_LOGO_PATH.match(value):
+        return value
     return str(HttpUrl(value))
 
 
