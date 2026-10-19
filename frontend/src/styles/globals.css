@@ -1,0 +1,248 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   Design tokens — the single source of truth for colour, type, radius,
+   elevation and motion. Components only ever reference these via the
+   Tailwind theme mapping below (bg-surface, text-muted, rounded-card...).
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Surfaces */
+  --bg: #f5f3ee;
+  --bg-glow: #ebe6ff;
+  --surface: #ffffff;
+  --surface-raised: #fbfaf7;
+  --surface-sunken: #efece5;
+  --overlay: rgb(22 21 26 / 0.4);
+
+  /* Text */
+  --fg: #16151a;
+  --fg-muted: #67646d;
+  --fg-subtle: #9a97a0;
+  --fg-on-accent: #ffffff;
+
+  /* Lines */
+  --border: #e4e0d8;
+  --border-strong: #d2cdc3;
+  --ring: #6a5cff;
+
+  /* Brand */
+  --accent: #5a4bf0;
+  --accent-hover: #4a3be0;
+  --accent-soft: #ece9ff;
+  --highlight: #d6f35d;
+  --highlight-fg: #1d2400;
+
+  /* Feedback */
+  --success: #11865b;
+  --warning: #b8630b;
+  --danger: #d43a3a;
+  --danger-soft: #fde9e7;
+
+  /* Application stages */
+  --stage-applied: #6b7280;
+  --stage-oa: #0e8f8f;
+  --stage-assignment: #b8630b;
+  --stage-hackathon: #c2410c;
+  --stage-round-1: #2563eb;
+  --stage-round-2: #4f46e5;
+  --stage-interview: #7c3aed;
+  --stage-offer: #11865b;
+  --stage-rejected: #d43a3a;
+  --stage-custom: #be185d;
+
+  /* Charts (validated with the dataviz palette checker against each surface) */
+  --chart-1: #5a4bf0;
+  --chart-grid: var(--border);
+
+  /* Shape & depth */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.375rem;
+  --shadow-sm: 0 1px 2px rgb(22 21 26 / 0.05);
+  --shadow-md: 0 1px 2px rgb(22 21 26 / 0.04), 0 8px 24px -8px rgb(22 21 26 / 0.1);
+  --shadow-lg: 0 2px 4px rgb(22 21 26 / 0.04), 0 24px 48px -16px rgb(22 21 26 / 0.22);
+
+  /* Layout & motion */
+  --sidebar-width: 15.5rem;
+  --topbar-height: 4rem;
+  --content-max: 76rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 180ms;
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0b0e;
+  --bg-glow: #1b1640;
+  --surface: #131317;
+  --surface-raised: #18181d;
+  --surface-sunken: #0f0f12;
+  --overlay: rgb(0 0 0 / 0.6);
+
+  --fg: #edebe6;
+  --fg-muted: #9b98a3;
+  --fg-subtle: #66636d;
+  --fg-on-accent: #0b0b0e;
+
+  --border: #24242b;
+  --border-strong: #33333c;
+  --ring: #9d93ff;
+
+  --accent: #9d93ff;
+  --accent-hover: #b2aaff;
+  --accent-soft: #221f3d;
+  --highlight: #d6f35d;
+  --highlight-fg: #1d2400;
+
+  --success: #3fcf8e;
+  --warning: #f0a440;
+  --danger: #ff6b6b;
+  --danger-soft: #3a1717;
+
+  --stage-applied: #a1a1aa;
+  --stage-oa: #2dd4bf;
+  --stage-assignment: #f0a440;
+  --stage-hackathon: #fb923c;
+  --stage-round-1: #60a5fa;
+  --stage-round-2: #818cf8;
+  --stage-interview: #b794f6;
+  --stage-offer: #3fcf8e;
+  --stage-rejected: #ff6b6b;
+  --stage-custom: #f472b6;
+
+  --chart-1: #8578ff;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.4), 0 24px 48px -16px rgb(0 0 0 / 0.8);
+
+  color-scheme: dark;
+}
+
+/* Map tokens into Tailwind utilities. */
+@theme inline {
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-overlay: var(--overlay);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-on-accent: var(--fg-on-accent);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-highlight-fg: var(--highlight-fg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-chart-1: var(--chart-1);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --spacing-sidebar: var(--sidebar-width);
+  --spacing-topbar: var(--topbar-height);
+  --container-content: var(--content-max);
+
+  --ease-out: var(--ease-out);
+
+  --animate-fade-in: fade-in var(--duration) var(--ease-out);
+  --animate-pop-in: pop-in 220ms var(--ease-out);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg;
+    font-feature-settings: "ss01", "cv11";
+    background-image:
+      radial-gradient(60rem 30rem at 85% -10%, var(--bg-glow), transparent 60%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-fg;
+    font-variation-settings: "wdth" 90;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--fg-on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+    cursor: pointer;
+  }
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}
+
+@layer components {
+  /* Stage pill colour driven by a single --stage custom property. */
+  .stage-tint {
+    color: var(--stage);
+    background: color-mix(in oklab, var(--stage) 12%, transparent);
+    border-color: color-mix(in oklab, var(--stage) 28%, transparent);
+  }
+  .stage-dot {
+    background: var(--stage);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--stage) 20%, transparent);
+  }
+}
+
+@layer utilities {
+  .tabular { font-variant-numeric: tabular-nums; }
+}
