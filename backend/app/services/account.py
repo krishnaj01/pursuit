@@ -15,7 +15,7 @@ from app.models.enums import ReminderKind, Stage
 STAGE_LABELS = {
     Stage.APPLIED: "Applied",
     Stage.AWAITING: "Awaiting",
-    Stage.OA_CLEARED: "OA cleared",
+    Stage.OA_CLEARED: "OA",
     Stage.ASSIGNMENT: "Assignment",
     Stage.HACKATHON: "Hackathon",
     Stage.ROUND_1: "Round 1",

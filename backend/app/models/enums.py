@@ -4,7 +4,7 @@ from enum import StrEnum
 class Stage(StrEnum):
     APPLIED = "applied"
     AWAITING = "awaiting"  # waiting to hear back from the company
-    OA_CLEARED = "oa_cleared"
+    OA_CLEARED = "oa_cleared"  # shown as "OA"; stored value kept for existing data
     ASSIGNMENT = "assignment"
     HACKATHON = "hackathon"
     ROUND_1 = "round_1"
