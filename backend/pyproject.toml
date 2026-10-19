@@ -5,7 +5,6 @@ description = "FastAPI backend for the job tracking platform"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.20.0",
-    "apscheduler>=3.11.3",
     "asyncpg>=0.32.0",
     "cachetools>=7.2.3",
     "fastapi>=0.146.0",

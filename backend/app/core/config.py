@@ -24,8 +24,6 @@ class Settings(BaseSettings):
     logo_dev_publishable_key: str | None = None
     logo_dev_secret_key: str | None = None
 
-    notification_job_interval_minutes: int = 60
-
     @field_validator("database_url")
     @classmethod
     def use_async_driver(cls, value: str) -> str:

@@ -5,9 +5,10 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import func, select, update
 
 from app.core.deps import CurrentUser, DbSession
-from app.models import Notification
+from app.models import Notification, User
 from app.schemas.notification import NotificationList, NotificationOut
 from app.services.notifications import generate_for_user
+from app.services.reminders import today_in
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
@@ -16,8 +17,12 @@ HISTORY_LIMIT = 30
 
 @router.get("", response_model=NotificationList)
 async def list_notifications(db: DbSession, user: CurrentUser):
-    # Lazily make sure today's digest exists, even if the scheduler hasn't run yet.
-    await generate_for_user(db, user)
+    # Build today's reminder digest on the user's first visit of their day only.
+    today = today_in(user.timezone)
+    if user.last_digest_check_on != today:
+        await generate_for_user(db, user)
+        await db.execute(update(User).where(User.id == user.id).values(last_digest_check_on=today))
+        await db.commit()
     items = await db.scalars(
         select(Notification)
         .where(Notification.user_id == user.id)

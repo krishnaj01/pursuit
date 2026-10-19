@@ -1,4 +1,3 @@
-import logging
 from datetime import date
 
 from sqlalchemy import select
@@ -7,8 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CLOSED_STAGES, Application, Notification, User
 from app.services.reminders import today_in
-
-logger = logging.getLogger(__name__)
 
 
 def _digest_text(apps: list[Application]) -> tuple[str, str]:
@@ -71,16 +68,3 @@ async def generate_for_user(session: AsyncSession, user: User) -> Notification |
             )
         )
     return notification
-
-
-async def generate_for_all_users(session: AsyncSession) -> int:
-    users = (await session.scalars(select(User))).all()
-    created = 0
-    for user in users:
-        try:
-            if await generate_for_user(session, user):
-                created += 1
-        except Exception:
-            logger.exception("Failed to generate notifications for user %s", user.id)
-            await session.rollback()
-    return created

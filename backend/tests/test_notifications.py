@@ -56,3 +56,37 @@ async def test_digest_is_idempotent_and_resurfaces_new_items(db, user):
 async def test_no_digest_when_nothing_due(db, user):
     await add_app(db, user, "Later", 5)
     assert await generate_for_user(db, user) is None
+
+
+async def test_digest_is_built_once_on_the_first_visit_of_the_day(client, monkeypatch):
+    from datetime import date
+
+    from app.api.v1 import notifications as notifications_api
+    from app.services import notifications as notifications_service
+
+    def travel_to(day: date) -> None:
+        for module in (notifications_api, notifications_service):
+            monkeypatch.setattr(module, "today_in", lambda _tz, day=day: day)
+
+    today = today_in("UTC")
+    travel_to(today)
+    payload = {"role": "SWE", "applied_on": today.isoformat(), "reminder_days": 0}
+
+    await client.post("/api/v1/applications", json=payload | {"company_name": "First"})
+    first_visit = (await client.get("/api/v1/notifications")).json()
+    assert first_visit["unread_count"] == 1
+    assert len(first_visit["items"][0]["application_ids"]) == 1
+
+    # Later visits the same day don't rebuild the digest, even if something new is due.
+    await client.post("/api/v1/notifications/read-all")
+    await client.post("/api/v1/applications", json=payload | {"company_name": "Second"})
+    later_visit = (await client.get("/api/v1/notifications")).json()
+    assert later_visit["unread_count"] == 0
+    assert len(later_visit["items"]) == 1
+
+    # The next day's first visit builds a fresh digest with everything still due.
+    travel_to(today + timedelta(days=1))
+    next_day = (await client.get("/api/v1/notifications")).json()
+    assert next_day["unread_count"] == 1
+    assert len(next_day["items"]) == 2
+    assert len(next_day["items"][0]["application_ids"]) == 2
