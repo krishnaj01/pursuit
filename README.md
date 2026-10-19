@@ -6,7 +6,7 @@
 
 **Apply widely. Follow up wisely.**
 
-A personal job-application tracker: log where you applied, move each application through its stages,<br />
+A personal job-application tracker log where you applied, move each application through its stages,<br />
 and get a gentle in-app nudge on the day it's time to check back in.
 
 <p>
