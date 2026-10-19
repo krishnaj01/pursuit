@@ -42,7 +42,7 @@ class ApplicationCreate(BaseModel):
     role: Role
     applied_on: date
     # First status-check reminder, counted from the day it's added to the app
-    # (`reminder_days`) or an exact custom date (`reminder_on`).
+    # (`reminder_days`) or an exact custom date (`reminder_on`). Omit both for no reminder.
     reminder_days: int | None = Field(default=None, ge=0, le=365)
     reminder_on: date | None = None
     notes: str | None = Field(default=None, max_length=5000)
@@ -50,9 +50,9 @@ class ApplicationCreate(BaseModel):
     _validate_logo = field_validator("logo_url")(classmethod(lambda cls, v: _clean_url(v)))
 
     @model_validator(mode="after")
-    def one_reminder_choice(self) -> Self:
-        if (self.reminder_days is None) == (self.reminder_on is None):
-            raise ValueError("Provide exactly one of `reminder_days` or `reminder_on`")
+    def at_most_one_reminder_choice(self) -> Self:
+        if self.reminder_days is not None and self.reminder_on is not None:
+            raise ValueError("Provide only one of `reminder_days` or `reminder_on`")
         return self
 
 
@@ -73,6 +73,8 @@ class StageUpdate(BaseModel):
     stage: Stage
     custom_stage_label: str | None = Field(default=None, max_length=100)
     event_date: date | None = None
+    # Set false to record the event date without being reminded about it.
+    remind: bool = True
 
     @model_validator(mode="after")
     def check_requirements(self) -> Self:
@@ -98,6 +100,14 @@ class ReminderUpdate(BaseModel):
         return self
 
 
+class StageEventUpdate(BaseModel):
+    """Partial edit of a timeline entry. The stage itself isn't editable — delete and re-add."""
+
+    occurred_on: date | None = None
+    event_date: date | None = None
+    custom_stage_label: str | None = Field(default=None, max_length=100)
+
+
 class StageEventOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -106,6 +116,7 @@ class StageEventOut(BaseModel):
     to_stage: Stage
     custom_stage_label: str | None
     event_date: date | None
+    occurred_on: date
     created_at: datetime
 
 

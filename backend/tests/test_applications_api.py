@@ -103,8 +103,15 @@ async def test_first_reminder_counts_from_date_added_not_applied_date(client):
     )
     assert custom.json()["next_reminder_on"] == custom_day.isoformat()
 
-    neither = await client.post("/api/v1/applications", json=payload)
-    assert neither.status_code == 422
+    no_reminder = await client.post("/api/v1/applications", json=payload)
+    assert no_reminder.status_code == 201
+    assert no_reminder.json()["next_reminder_on"] is None
+
+    both = await client.post(
+        "/api/v1/applications",
+        json=payload | {"reminder_days": 3, "reminder_on": custom_day.isoformat()},
+    )
+    assert both.status_code == 422
 
 
 async def test_requires_auth(client):

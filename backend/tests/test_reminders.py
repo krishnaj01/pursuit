@@ -88,3 +88,23 @@ def test_reminder_update_needs_exactly_one_field():
 
 def test_unknown_timezone_falls_back_to_utc():
     assert reminders.safe_zone("Not/AZone").key == "UTC"
+
+
+def test_initial_reminder_can_be_none():
+    assert reminders.initial_reminder(TODAY) is None
+
+
+def test_dated_stage_without_reminder_keeps_event_date():
+    app = make_app()
+    event_day = TODAY + timedelta(days=4)
+    reminders.apply_stage_change(
+        app, StageUpdate(stage="interview", event_date=event_day, remind=False), TODAY
+    )
+    assert app.event_date == event_day
+    assert app.next_reminder_on is None
+
+
+def test_clear_reminder():
+    app = make_app()
+    reminders.clear_reminder(app)
+    assert app.next_reminder_on is None
