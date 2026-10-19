@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 
 import { useApplications } from '@/api/applications'
 import { ApplicationForm } from '@/components/applications/ApplicationForm'
+import { NotePreview } from '@/components/applications/NotePreview'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { CompanyLogo } from '@/components/ui/CompanyLogo'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -52,7 +53,10 @@ export function NewApplicationPage() {
               <div key={app.id} className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-surface-sunken">
                 <CompanyLogo name={app.company_name} src={app.logo_url} size="sm" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{app.company_name}</p>
+                  <div className="flex min-w-0 items-center gap-1">
+                    <p className="truncate text-sm font-medium">{app.company_name}</p>
+                    <NotePreview companyName={app.company_name} notes={app.notes} />
+                  </div>
                   <p className="truncate text-xs text-muted">{app.role}</p>
                 </div>
                 <div className="flex max-w-[45%] min-w-0 shrink-0 flex-col items-end gap-1">

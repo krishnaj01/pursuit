@@ -19,6 +19,7 @@ import { cn, daysFromToday, formatDate } from '@/lib/utils'
 import { type PageSize, useUiStore } from '@/stores/uiStore'
 import type { Application } from '@/types'
 
+import { NotePreview } from './NotePreview'
 import { ReminderCell } from './ReminderCell'
 import { ReminderMenu } from './ReminderMenu'
 import { RowActions } from './RowActions'
@@ -48,7 +49,10 @@ function CompanyCell({ application: a }: { application: Application }) {
     <div className="flex min-w-0 items-center gap-3">
       <CompanyLogo name={a.company_name} src={a.logo_url} />
       <div className="min-w-0 flex-1">
-        <TruncatedText as="p" className="font-medium">{a.company_name}</TruncatedText>
+        <div className="flex min-w-0 items-center gap-1">
+          <TruncatedText as="p" className="font-medium">{a.company_name}</TruncatedText>
+          <NotePreview companyName={a.company_name} notes={a.notes} />
+        </div>
         {a.company_domain && <TruncatedText as="p" className="font-mono text-[11px] text-subtle">{a.company_domain}</TruncatedText>}
       </div>
     </div>
