@@ -2,6 +2,7 @@ import { Briefcase, CalendarDays, Hourglass, MessagesSquare, Reply, Trophy } fro
 
 import { useStats } from '@/api/stats'
 import { UserAvatar } from '@/components/layout/UserMenu'
+import { YourDataCard } from '@/components/profile/YourDataCard'
 import { StageBreakdown } from '@/components/stats/StageBreakdown'
 import { StatTile } from '@/components/stats/StatTile'
 import { WeeklyChart } from '@/components/stats/WeeklyChart'
@@ -90,6 +91,7 @@ export function ProfilePage() {
               )}
             </CardContent>
           </Card>
+          <YourDataCard />
         </div>
       )}
     </>

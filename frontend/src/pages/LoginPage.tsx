@@ -4,6 +4,7 @@ import { Navigate } from 'react-router'
 import { toast } from 'sonner'
 
 import { useGoogleSignIn } from '@/api/auth'
+import { PrivacyNote } from '@/components/auth/PrivacyNote'
 import { Logo } from '@/components/layout/Logo'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { errorMessage } from '@/lib/api'
@@ -55,7 +56,12 @@ export function LoginPage() {
               size="large"
               text="continue_with"
             />
-            <p className="text-xs text-subtle">We only use your name, email and photo.</p>
+            <p className="text-xs text-subtle">
+              We only use your name, email and photo.{' '}
+              <a href="#privacy" className="font-medium text-muted underline decoration-border-strong underline-offset-4 transition-colors hover:text-fg">
+                What we store
+              </a>
+            </p>
           </div>
         </div>
 
@@ -70,6 +76,8 @@ export function LoginPage() {
             </div>
           ))}
         </div>
+
+        <PrivacyNote />
       </main>
     </div>
   )
