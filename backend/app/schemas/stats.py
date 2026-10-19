@@ -27,6 +27,7 @@ class UpcomingEvent(BaseModel):
 class StatsOut(BaseModel):
     total: int
     active: int
+    closed: int
     rejected: int
     offers: int
     interviewing: int

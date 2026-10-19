@@ -6,7 +6,7 @@ from sqlalchemy import case, nulls_last, select
 from sqlalchemy.orm import selectinload
 
 from app.core.deps import CurrentUser, DbSession
-from app.models import Application, Stage, StageEvent
+from app.models import CLOSED_STAGES, Application, Stage, StageEvent
 from app.schemas.application import (
     ApplicationCreate,
     ApplicationFilter,
@@ -58,7 +58,7 @@ async def list_applications(
 ):
     today = reminders.today_in(user.timezone)
     query = select(Application).where(Application.user_id == user.id)
-    active = Application.stage != Stage.REJECTED
+    active = Application.stage.not_in(CLOSED_STAGES)
 
     match filter:
         case ApplicationFilter.DUE:
@@ -66,11 +66,11 @@ async def list_applications(
         case ApplicationFilter.UPCOMING:
             query = query.where(active, Application.next_reminder_on > today)
         case ApplicationFilter.CLOSED:
-            query = query.where(Application.stage == Stage.REJECTED)
+            query = query.where(Application.stage.in_(CLOSED_STAGES))
 
     # Soonest (and overdue) reminders first; closed applications sink to the bottom.
     query = query.order_by(
-        case((Application.stage == Stage.REJECTED, 1), else_=0),
+        case((Application.stage.in_(CLOSED_STAGES), 1), else_=0),
         nulls_last(Application.next_reminder_on.asc()),
         Application.applied_on.desc(),
     )

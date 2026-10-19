@@ -4,14 +4,14 @@
   or not at all.
 - Moving to a dated stage (OA, interview, assignment...): remind on that event's date,
   unless the user opts out.
-- Rejected: no further reminders.
+- Closed (offer or rejected): no further reminders.
 - The user can schedule the next status check at any time (unless rejected), or clear it.
 """
 
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from app.models import Application, ReminderKind, Stage, StageEvent
+from app.models import CLOSED_STAGES, Application, ReminderKind, Stage, StageEvent
 from app.schemas.application import ReminderUpdate, StageUpdate
 
 DEFAULT_REOPEN_DAYS = 7
@@ -59,7 +59,7 @@ def apply_stage_change(app: Application, update: StageUpdate, today: date) -> St
     app.stage = update.stage
     app.custom_stage_label = update.custom_stage_label
 
-    if update.stage == Stage.REJECTED:
+    if update.stage in CLOSED_STAGES:
         app.event_date = None
         app.next_reminder_on = None
         app.reminder_kind = ReminderKind.STATUS_CHECK
@@ -80,8 +80,8 @@ def apply_stage_change(app: Application, update: StageUpdate, today: date) -> St
 
 
 def schedule_next_reminder(app: Application, update: ReminderUpdate, today: date) -> None:
-    if app.stage == Stage.REJECTED:
-        raise ReminderError("Rejected applications don't get reminders")
+    if app.stage in CLOSED_STAGES:
+        raise ReminderError("Closed applications don't get reminders")
     next_on = update.on_date if update.on_date else today + timedelta(days=update.days or 0)
     if next_on < today:
         raise ReminderError("The next reminder can't be in the past")

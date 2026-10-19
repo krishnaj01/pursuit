@@ -153,3 +153,29 @@ async def test_cannot_touch_another_users_timeline(client):
     assert (
         await client.delete(f"/api/v1/applications/{app['id']}/history/{entry['id']}")
     ).status_code == 401
+
+
+async def test_offer_is_closed(client):
+    app = await create(client)
+    offer = await move(client, app["id"], "offer")
+    assert offer["next_reminder_on"] is None and offer["event_date"] is None
+
+    blocked = await client.post(f"/api/v1/applications/{app['id']}/reminder", json={"days": 3})
+    assert blocked.status_code == 422
+
+    closed = (await client.get("/api/v1/applications", params={"filter": "closed"})).json()
+    assert [a["id"] for a in closed] == [app["id"]]
+    for active_filter in ("due", "upcoming"):
+        listed = (await client.get("/api/v1/applications", params={"filter": active_filter})).json()
+        assert app["id"] not in [a["id"] for a in listed]
+
+    stats = (await client.get("/api/v1/stats")).json()
+    assert stats["closed"] == 1 and stats["active"] == 0 and stats["offers"] == 1
+
+
+async def test_closed_apps_sort_last(client):
+    offer = await create(client, company_name="Offer Co", reminder_days=1)
+    await move(client, offer["id"], "offer")
+    open_app = await create(client, company_name="Open Co", reminder_days=30)
+    names = [a["company_name"] for a in (await client.get("/api/v1/applications")).json()]
+    assert names.index(open_app["company_name"]) < names.index("Offer Co")

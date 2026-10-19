@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Application, Stage, StageEvent
+from app.models import CLOSED_STAGES, Application, Stage, StageEvent
 from app.schemas.stats import StageCount, StatsOut, UpcomingEvent, WeeklyCount
 
 INTERVIEW_STAGES = frozenset({Stage.ROUND_1, Stage.ROUND_2, Stage.INTERVIEW})
@@ -42,20 +42,25 @@ async def compute_stats(session: AsyncSession, user_id, today: date) -> StatsOut
             weekly[week] += 1
 
     upcoming = sorted(
-        (a for a in apps if a.event_date and a.event_date >= today and a.stage != Stage.REJECTED),
+        (
+            a
+            for a in apps
+            if a.event_date and a.event_date >= today and a.stage not in CLOSED_STAGES
+        ),
         key=lambda a: a.event_date,
     )[:5]
 
     return StatsOut(
         total=total,
-        active=total - rejected,
+        active=total - rejected - offers,
+        closed=rejected + offers,
         rejected=rejected,
         offers=offers,
         interviewing=sum(by_stage[s] for s in INTERVIEW_STAGES),
         due_today=sum(
             1
             for a in apps
-            if a.stage != Stage.REJECTED and a.next_reminder_on and a.next_reminder_on <= today
+            if a.stage not in CLOSED_STAGES and a.next_reminder_on and a.next_reminder_on <= today
         ),
         response_rate=round(responded / total, 4) if total else 0.0,
         offer_rate=round(offers / total, 4) if total else 0.0,

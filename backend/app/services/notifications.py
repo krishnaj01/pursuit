@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Application, Notification, Stage, User
+from app.models import CLOSED_STAGES, Application, Notification, User
 from app.services.reminders import today_in
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ async def due_applications(session: AsyncSession, user_id, today: date) -> list[
         select(Application)
         .where(
             Application.user_id == user_id,
-            Application.stage != Stage.REJECTED,
+            Application.stage.not_in(CLOSED_STAGES),
             Application.next_reminder_on.is_not(None),
             Application.next_reminder_on <= today,
         )

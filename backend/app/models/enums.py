@@ -14,6 +14,10 @@ class Stage(StrEnum):
     CUSTOM = "custom"
 
 
+# Finished applications: no reminders, listed under "Closed", sorted last.
+CLOSED_STAGES = frozenset({Stage.OFFER, Stage.REJECTED})
+
+
 class ReminderKind(StrEnum):
     STATUS_CHECK = "status_check"
     EVENT = "event"

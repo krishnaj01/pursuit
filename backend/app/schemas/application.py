@@ -6,10 +6,10 @@ from typing import Annotated, Self
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-from app.models.enums import ReminderKind, Stage
+from app.models.enums import CLOSED_STAGES, ReminderKind, Stage
 
 # Stages that don't come with a dated event (OA date, interview date, deadline...).
-UNDATED_STAGES = frozenset({Stage.APPLIED, Stage.REJECTED})
+UNDATED_STAGES = frozenset({Stage.APPLIED}) | CLOSED_STAGES
 
 CompanyName = Annotated[str, Field(min_length=1, max_length=200)]
 Role = Annotated[str, Field(min_length=1, max_length=200)]
