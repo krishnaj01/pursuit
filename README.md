@@ -66,6 +66,8 @@ uv run uvicorn app.main:app --reload --port 8000
 
 API docs: http://localhost:8000/docs
 
+After pulling changes, run `uv run alembic upgrade head` again. The backend logs an error at startup if the database is behind the code's migrations.
+
 ### 3. Frontend
 
 Requires Node 20+.
