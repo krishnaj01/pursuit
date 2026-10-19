@@ -33,17 +33,20 @@ const isDue = (a: Application) => !isClosed(a.stage) && !!a.next_reminder_on && 
 const COLUMN_WIDTHS: Record<string, string> = {
   // Role is capped so freed space goes to Company, which carries the logo and icons.
   role: 'w-[19%]',
-  applied_on: 'w-[7.5rem]',
-  // Fits the widest standard stage pill ("Assignment") without truncating.
-  stage: 'w-[9.5rem]',
-  reminder: 'w-[12.5rem]',
+  // Fits the widest date ("30 Sep 2026", 86px in the mono font) with trimmed padding.
+  applied_on: 'w-[6.75rem]',
+  // Hugs the widest standard stage pill ("Assignment") without truncating.
+  stage: 'w-[8.75rem]',
+  reminder: 'w-[12.25rem]',
   actions: 'w-[7.5rem] min-[1380px]:w-[12.5rem]',
 }
 
 /** Per-column cell padding overrides (header and body). */
 const COLUMN_PADDING: Record<string, string> = {
-  // Tighter gap after the stage pill.
-  reminder: 'pl-2',
+  applied_on: 'pl-3 pr-2',
+  // Keep the next reminder close to the stage pill.
+  stage: 'pr-1',
+  reminder: 'pl-1.5',
 }
 
 const rowTone = (a: Application, highlighted: Set<string>) =>
