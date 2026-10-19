@@ -23,6 +23,16 @@ from app.main import app  # noqa: E402
 from app.models import User  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _fresh_logo_cache():
+    # The image cache is process-wide; keep tests independent.
+    from app.services.logo_images import cache_clear
+
+    cache_clear()
+    yield
+    cache_clear()
+
+
 @pytest.fixture
 async def session_factory():
     engine = create_async_engine(

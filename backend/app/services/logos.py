@@ -1,8 +1,8 @@
 """Company logo lookup with a database cache.
 
 Logos are downloaded from logo.dev (falling back to Google's favicon service) once per
-domain and stored in `logo_assets`. Applications reference our own image endpoint, so
-rendering a table never hits the upstream API and its rate limits.
+domain, normalised to small WebP images and stored in `logo_assets`. Applications reference
+our own image endpoint, so rendering a table never hits the upstream API and its rate limits.
 """
 
 import logging
@@ -16,6 +16,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.models import CompanyDomain, LogoAsset
 from app.schemas.logo import LogoResolution
+from app.services import logo_images
+from app.services.logo_images import CachedImage
 
 logger = logging.getLogger(__name__)
 
@@ -100,11 +102,12 @@ async def _fetch_upstream(client: httpx.AsyncClient, domain: str) -> tuple[bytes
             client,
             LOGO_DEV_IMG_URL.format(domain=domain),
             # fallback=404 makes unknown domains fail instead of returning a monogram.
-            {"token": token, "size": 128, "format": "png", "retina": "true", "fallback": "404"},
+            {"token": token, "size": logo_images.OUTPUT_SIZE, "format": "png", "fallback": "404"},
         )
         if logo:
             return *logo, "logo.dev"
-    favicon = await _download(client, FAVICON_URL, {"domain": domain, "sz": 128})
+    favicon_params = {"domain": domain, "sz": logo_images.OUTPUT_SIZE}
+    favicon = await _download(client, FAVICON_URL, favicon_params)
     if favicon:
         return *favicon, "favicon"
     return None
@@ -126,8 +129,13 @@ async def get_or_fetch_asset(
     if asset is None:
         asset = LogoAsset(domain=domain)
         session.add(asset)
-    asset.data, asset.content_type, asset.source = fetched if fetched else (None, None, None)
+    if fetched:
+        data, content_type, asset.source = fetched
+        asset.data, asset.content_type = logo_images.normalize_for_storage(data, content_type)
+    else:
+        asset.data, asset.content_type, asset.source = None, None, None
     asset.fetched_at = now
+    logo_images.cache_forget(domain)
     try:
         await session.commit()
     except IntegrityError:
@@ -154,6 +162,22 @@ async def resolve_logo(
     return LogoResolution(domain=domain, logo_url=image_path(domain) if asset else None)
 
 
-async def get_cached_image(session: AsyncSession, domain: str) -> LogoAsset | None:
-    asset = await session.get(LogoAsset, normalize_domain(domain))
-    return asset if asset and asset.data else None
+async def get_cached_image(session: AsyncSession, domain: str) -> CachedImage | None:
+    """Serve a stored logo, from memory when possible.
+
+    Logos stored before WebP normalisation existed are converted the first time they're
+    served, so existing data upgrades itself without a separate migration step.
+    """
+    domain = normalize_domain(domain)
+    if cached := logo_images.cache_get(domain):
+        return cached
+
+    asset = await session.get(LogoAsset, domain)
+    if asset is None or not asset.data or not asset.content_type:
+        return None
+    if asset.content_type != logo_images.OUTPUT_TYPE:
+        data, content_type = logo_images.normalize_for_storage(asset.data, asset.content_type)
+        if data is not asset.data:  # only persist when optimising actually helped
+            asset.data, asset.content_type = data, content_type
+            await session.commit()
+    return logo_images.cache_put(domain, asset.data, asset.content_type)
