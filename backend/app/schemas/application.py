@@ -6,10 +6,10 @@ from typing import Annotated, Self
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator, model_validator
 
-from app.models.enums import CLOSED_STAGES, ReminderKind, Stage
+from app.models.enums import CLOSED_STAGES, FOLLOW_UP_STAGES, ReminderKind, Stage
 
 # Stages that don't come with a dated event (OA date, interview date, deadline...).
-UNDATED_STAGES = frozenset({Stage.APPLIED}) | CLOSED_STAGES
+UNDATED_STAGES = FOLLOW_UP_STAGES | CLOSED_STAGES
 
 CompanyName = Annotated[str, Field(min_length=1, max_length=200)]
 Role = Annotated[str, Field(min_length=1, max_length=200)]
@@ -75,9 +75,17 @@ class StageUpdate(BaseModel):
     event_date: date | None = None
     # Set false to record the event date without being reminded about it.
     remind: bool = True
+    # Follow-up stages (Applied, Awaiting) may schedule the next check-in in the same request.
+    follow_up_days: int | None = Field(default=None, ge=1, le=365)
+    follow_up_on: date | None = None
 
     @model_validator(mode="after")
     def check_requirements(self) -> Self:
+        if self.follow_up_days is not None or self.follow_up_on is not None:
+            if self.stage not in FOLLOW_UP_STAGES:
+                raise ValueError("Follow-up reminders only apply to Applied or Awaiting")
+            if self.follow_up_days is not None and self.follow_up_on is not None:
+                raise ValueError("Provide only one of `follow_up_days` or `follow_up_on`")
         if self.stage == Stage.CUSTOM and not (self.custom_stage_label or "").strip():
             raise ValueError("A label is required for a custom stage")
         if self.stage not in UNDATED_STAGES and self.event_date is None:

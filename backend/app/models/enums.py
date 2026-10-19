@@ -3,6 +3,7 @@ from enum import StrEnum
 
 class Stage(StrEnum):
     APPLIED = "applied"
+    AWAITING = "awaiting"  # waiting to hear back from the company
     OA_CLEARED = "oa_cleared"
     ASSIGNMENT = "assignment"
     HACKATHON = "hackathon"
@@ -16,6 +17,10 @@ class Stage(StrEnum):
 
 # Finished applications: no reminders, listed under "Closed", sorted last.
 CLOSED_STAGES = frozenset({Stage.OFFER, Stage.REJECTED})
+
+# Open stages without an event date, where the user is waiting on the company and
+# follow-up reminders apply. Neither counts as a response from the company.
+FOLLOW_UP_STAGES = frozenset({Stage.APPLIED, Stage.AWAITING})
 
 
 class ReminderKind(StrEnum):

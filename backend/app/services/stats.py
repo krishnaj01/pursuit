@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import CLOSED_STAGES, Application, Stage, StageEvent
+from app.models import CLOSED_STAGES, FOLLOW_UP_STAGES, Application, Stage, StageEvent
 from app.schemas.stats import StageCount, StatsOut, UpcomingEvent, WeeklyCount
 
 INTERVIEW_STAGES = frozenset({Stage.ROUND_1, Stage.ROUND_2, Stage.INTERVIEW})
@@ -20,7 +20,7 @@ async def compute_stats(session: AsyncSession, user_id, today: date) -> StatsOut
         await session.scalars(
             select(StageEvent.application_id)
             .join(Application)
-            .where(Application.user_id == user_id, StageEvent.to_stage != Stage.APPLIED)
+            .where(Application.user_id == user_id, StageEvent.to_stage.not_in(FOLLOW_UP_STAGES))
         )
     )
 
@@ -31,7 +31,8 @@ async def compute_stats(session: AsyncSession, user_id, today: date) -> StatsOut
 
     rejected = by_stage[Stage.REJECTED]
     offers = by_stage[Stage.OFFER]
-    responded = sum(1 for a in apps if a.id in progressed_ids or a.stage != Stage.APPLIED)
+    # Applied/Awaiting mean no reply yet; any other stage means the company responded.
+    responded = sum(1 for a in apps if a.id in progressed_ids or a.stage not in FOLLOW_UP_STAGES)
 
     this_week = _week_start(today)
     weeks = [this_week - timedelta(weeks=i) for i in range(WEEKS_OF_HISTORY - 1, -1, -1)]

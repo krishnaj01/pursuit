@@ -11,7 +11,7 @@
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from app.models import CLOSED_STAGES, Application, ReminderKind, Stage, StageEvent
+from app.models import CLOSED_STAGES, FOLLOW_UP_STAGES, Application, ReminderKind, StageEvent
 from app.schemas.application import ReminderUpdate, StageUpdate
 
 DEFAULT_REOPEN_DAYS = 7
@@ -63,9 +63,18 @@ def apply_stage_change(app: Application, update: StageUpdate, today: date) -> St
         app.event_date = None
         app.next_reminder_on = None
         app.reminder_kind = ReminderKind.STATUS_CHECK
-    elif update.stage == Stage.APPLIED:
+    elif update.stage in FOLLOW_UP_STAGES:
         app.event_date = None
         app.reminder_kind = ReminderKind.STATUS_CHECK
+        if not update.remind:
+            app.next_reminder_on = None
+        elif update.follow_up_on is not None:
+            if update.follow_up_on < today:
+                raise ReminderError("The follow-up reminder can't be in the past")
+            app.next_reminder_on = update.follow_up_on
+        elif update.follow_up_days is not None:
+            app.next_reminder_on = today + timedelta(days=update.follow_up_days)
+        # otherwise keep the existing status-check reminder (or lack of one)
     elif update.remind:
         app.event_date = update.event_date
         app.next_reminder_on = update.event_date

@@ -179,3 +179,44 @@ async def test_closed_apps_sort_last(client):
     open_app = await create(client, company_name="Open Co", reminder_days=30)
     names = [a["company_name"] for a in (await client.get("/api/v1/applications")).json()]
     assert names.index(open_app["company_name"]) < names.index("Offer Co")
+
+
+async def test_awaiting_schedules_a_follow_up_and_is_not_a_response(client):
+    app = await create(client)
+
+    by_days = await move(client, app["id"], "awaiting", follow_up_days=5)
+    assert by_days["stage"] == "awaiting"
+    assert by_days["event_date"] is None
+    assert by_days["reminder_kind"] == "status_check"
+    assert by_days["next_reminder_on"] == (TODAY + timedelta(days=5)).isoformat()
+
+    on_date = await move(
+        client, app["id"], "awaiting", follow_up_on=(TODAY + timedelta(days=9)).isoformat()
+    )
+    assert on_date["next_reminder_on"] == (TODAY + timedelta(days=9)).isoformat()
+
+    no_reminder = await move(client, app["id"], "awaiting", remind=False)
+    assert no_reminder["next_reminder_on"] is None
+
+    kept = await move(client, app["id"], "applied")
+    assert kept["next_reminder_on"] is None  # nothing given: existing reminder kept as-is
+
+    stats = (await client.get("/api/v1/stats")).json()
+    assert stats["response_rate"] == 0.0  # still waiting on the company
+
+    after_interview = await create(client, company_name="Beta")
+    await move(client, after_interview["id"], "interview", days=1)
+    await move(client, after_interview["id"], "awaiting", follow_up_days=3)
+    stats = (await client.get("/api/v1/stats")).json()
+    assert stats["response_rate"] == 0.5  # the interview was a response
+
+
+async def test_follow_up_fields_are_validated(client):
+    app = await create(client)
+    for body in (
+        {"stage": "interview", "event_date": TODAY.isoformat(), "follow_up_days": 3},
+        {"stage": "awaiting", "follow_up_days": 3, "follow_up_on": TODAY.isoformat()},
+        {"stage": "awaiting", "follow_up_on": (TODAY - timedelta(days=1)).isoformat()},
+    ):
+        response = await client.patch(f"/api/v1/applications/{app['id']}/stage", json=body)
+        assert response.status_code == 422, body

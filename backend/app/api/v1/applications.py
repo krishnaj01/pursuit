@@ -157,7 +157,10 @@ async def update_application(
 @router.patch("/{app_id}/stage", response_model=ApplicationOut)
 async def update_stage(app_id: uuid.UUID, payload: StageUpdate, db: DbSession, user: CurrentUser):
     app = await _get_owned(db, user, app_id)
-    reminders.apply_stage_change(app, payload, reminders.today_in(user.timezone))
+    try:
+        reminders.apply_stage_change(app, payload, reminders.today_in(user.timezone))
+    except reminders.ReminderError as exc:
+        raise _unprocessable(exc) from exc
     return await _save(db, app)
 
 
