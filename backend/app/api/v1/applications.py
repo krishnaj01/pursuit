@@ -146,7 +146,7 @@ async def update_application(
 ):
     app = await _get_owned(db, user, app_id)
     for field, value in payload.model_dump(exclude_unset=True).items():
-        if value is None and field not in {"logo_url", "company_domain", "notes"}:
+        if value is None and field not in {"logo_url", "company_domain", "job_url", "notes"}:
             continue  # required columns can't be cleared
         setattr(app, field, value)
     if payload.applied_on and app.stage_events:

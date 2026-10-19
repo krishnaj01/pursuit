@@ -40,6 +40,7 @@ class Application(TimestampMixin, Base):
     reminder_kind: Mapped[ReminderKind] = mapped_column(
         _str_enum(ReminderKind), nullable=False, default=ReminderKind.STATUS_CHECK
     )
+    job_url: Mapped[str | None] = mapped_column(String(2048))
     notes: Mapped[str | None] = mapped_column(Text)
 
     updated_at: Mapped[datetime] = mapped_column(

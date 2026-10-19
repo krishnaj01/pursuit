@@ -117,3 +117,32 @@ async def test_first_reminder_counts_from_date_added_not_applied_date(client):
 async def test_requires_auth(client):
     client.cookies.clear()
     assert (await client.get("/api/v1/applications")).status_code == 401
+
+
+async def test_job_url_is_optional_validated_and_editable(client):
+    today = today_in("UTC").isoformat()
+    base = {"company_name": "Ramp", "role": "SWE", "applied_on": today, "reminder_days": 3}
+
+    without = await client.post("/api/v1/applications", json=base)
+    assert without.status_code == 201 and without.json()["job_url"] is None
+
+    url = "https://jobs.example.com/ramp/software-engineer?ref=pursuit"
+    created = await client.post("/api/v1/applications", json=base | {"job_url": f"  {url}  "})
+    assert created.status_code == 201
+    app = created.json()
+    assert app["job_url"] == url
+
+    for bad in ("javascript:alert(1)", "ftp://files.example.com/job", "not a url"):
+        response = await client.post("/api/v1/applications", json=base | {"job_url": bad})
+        assert response.status_code == 422, bad
+
+    changed = await client.patch(
+        f"/api/v1/applications/{app['id']}", json={"job_url": "https://example.com/new"}
+    )
+    assert changed.json()["job_url"] == "https://example.com/new"
+
+    untouched = await client.patch(f"/api/v1/applications/{app['id']}", json={"notes": "Hi"})
+    assert untouched.json()["job_url"] == "https://example.com/new"
+
+    cleared = await client.patch(f"/api/v1/applications/{app['id']}", json={"job_url": None})
+    assert cleared.json()["job_url"] is None

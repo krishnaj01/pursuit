@@ -19,6 +19,19 @@ Domain = Annotated[str, Field(max_length=255, pattern=r"^[a-zA-Z0-9.-]+\.[a-zA-Z
 CACHED_LOGO_PATH = re.compile(r"^/api/v1/logos/image/[a-zA-Z0-9.-]+$")
 
 
+JOB_URL_MAX_LENGTH = 2048
+
+
+def _clean_job_url(value: str | None) -> str | None:
+    """Job posting links must be absolute http(s) URLs."""
+    if value is None or not value.strip():
+        return None
+    url = str(HttpUrl(value.strip()))
+    if len(url) > JOB_URL_MAX_LENGTH:
+        raise ValueError("The job URL is too long")
+    return url
+
+
 def _clean_url(value: str | None) -> str | None:
     """Accept an absolute http(s) image URL or a path to our own cached logo."""
     if value is None or value == "":
@@ -45,9 +58,11 @@ class ApplicationCreate(BaseModel):
     # (`reminder_days`) or an exact custom date (`reminder_on`). Omit both for no reminder.
     reminder_days: int | None = Field(default=None, ge=0, le=365)
     reminder_on: date | None = None
+    job_url: str | None = None
     notes: str | None = Field(default=None, max_length=5000)
 
     _validate_logo = field_validator("logo_url")(classmethod(lambda cls, v: _clean_url(v)))
+    _validate_job_url = field_validator("job_url")(classmethod(lambda cls, v: _clean_job_url(v)))
 
     @model_validator(mode="after")
     def at_most_one_reminder_choice(self) -> Self:
@@ -64,9 +79,11 @@ class ApplicationUpdate(BaseModel):
     logo_url: str | None = None
     role: Role | None = None
     applied_on: date | None = None
+    job_url: str | None = None
     notes: str | None = Field(default=None, max_length=5000)
 
     _validate_logo = field_validator("logo_url")(classmethod(lambda cls, v: _clean_url(v)))
+    _validate_job_url = field_validator("job_url")(classmethod(lambda cls, v: _clean_job_url(v)))
 
 
 class StageUpdate(BaseModel):
@@ -142,6 +159,7 @@ class ApplicationOut(BaseModel):
     event_date: date | None
     next_reminder_on: date | None
     reminder_kind: ReminderKind
+    job_url: str | None
     notes: str | None
     created_at: datetime
     updated_at: datetime

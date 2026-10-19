@@ -28,7 +28,12 @@ def parse(text: str) -> list[dict]:
 
 
 async def test_export_csv_contains_applications_and_timeline(client):
-    app = await add(client, notes="Referred by Priya", logo_url="/api/v1/logos/image/stripe.com")
+    app = await add(
+        client,
+        notes="Referred by Priya",
+        logo_url="/api/v1/logos/image/stripe.com",
+        job_url="https://stripe.com/jobs/123",
+    )
     await client.patch(
         f"/api/v1/applications/{app['id']}/stage",
         json={"stage": "interview", "event_date": (TODAY + timedelta(days=3)).isoformat()},
@@ -43,6 +48,7 @@ async def test_export_csv_contains_applications_and_timeline(client):
     assert row["Company"] == "Stripe"
     assert row["Stage"] == "Interview"
     assert row["Notes"] == "Referred by Priya"
+    assert row["Job URL"] == "https://stripe.com/jobs/123"
     assert row["Timeline"].startswith("Applied (")
     assert row["Custom logo URL"] == ""
     assert "Interview (" in row["Timeline"]
