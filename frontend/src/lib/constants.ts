@@ -46,5 +46,7 @@ export const REMINDER_PRESETS = [3, 5, 7, 15] as const
 
 export const PAGE_SIZE_OPTIONS = [10, 20, 50] as const
 
-export const NOTIFICATION_POLL_MS = 60_000
+// Only re-reads notifications (the digest itself is built on the first visit of the day);
+// frequent enough for a tab left open past midnight to pick up the new day.
+export const NOTIFICATION_POLL_MS = 5 * 60_000
 export const LOGO_LOOKUP_DEBOUNCE_MS = 450

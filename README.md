@@ -107,7 +107,7 @@ Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps
 | Layer | Built with |
 |---|---|
 | **Frontend** | React 19 + TypeScript (Vite), Tailwind CSS v4, React Router, TanStack Query & Table, zustand, react-hook-form + zod, Radix UI, react-day-picker, Recharts, sonner |
-| **Backend** | FastAPI, SQLAlchemy 2 (async) + asyncpg, Alembic, pydantic-settings, google-auth, PyJWT, APScheduler, httpx, Pillow |
+| **Backend** | FastAPI, SQLAlchemy 2 (async) + asyncpg, Alembic, pydantic-settings, google-auth, PyJWT, httpx, Pillow |
 | **Database** | PostgreSQL (any provider — local, Neon, Supabase, RDS…) |
 | **Tooling** | uv, Ruff, pytest, oxlint |
 
@@ -188,7 +188,7 @@ Open <http://localhost:5173>. In development, Vite proxies `/api` to the backend
 | You edit the latest timeline entry's date | moves with it |
 | You delete the latest timeline entry | back to the previous stage's event (if still upcoming), otherwise a check-in in 7 days |
 
-"Today" is always *your* today: the browser's timezone is saved at sign-in. A background job builds each day's digest, and it's also built on demand, so reminders show up even after downtime.
+"Today" is always *your* today: the browser's timezone is saved at sign-in. The day's digest is built the first time you open Pursuit that day, so there's no background job to run or keep alive.
 
 ## 🔒 Privacy
 
@@ -208,7 +208,6 @@ backend/
     models/       SQLAlchemy models
     schemas/      pydantic request/response models
     services/     reminders, timeline, notifications, logos, stats, account
-    jobs/         APScheduler reminder-digest job
   alembic/        migrations
   tests/          pytest suite
 frontend/
@@ -224,13 +223,37 @@ docs/screenshots/ images used in this README
 
 </details>
 
-## 🌐 Deploying
+## 🌐 Deploying (Render)
 
-- Add your production URL to the OAuth client's **Authorized JavaScript origins**, and publish the OAuth consent screen so anyone can sign in.
-- Set `COOKIE_SECURE=true` and `FRONTEND_ORIGIN=https://your-domain`.
-- Serving the frontend and API from the same domain (with `/api` routed to the backend) keeps the session cookie simple.
-- Run `uv run alembic upgrade head` on every deploy.
-- Optional: put a CDN in front of `/api/v1/logos/image/*` — those responses are already publicly cacheable.
+Pursuit runs as two Render services: a **Web Service** for the API and a **Static Site** for the frontend. The static site forwards `/api/*` to the API, so the browser only ever talks to one domain and the session cookie just works.
+
+**Backend — Web Service**
+
+| Setting | Value |
+|---|---|
+| Root Directory | `backend` |
+| Build Command | `uv sync --locked --no-dev && uv run --no-sync alembic upgrade head` |
+| Start Command | `uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Health Check Path | `/health` |
+| Environment | `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET` (a new random value), `COOKIE_SECURE=true`, `FRONTEND_ORIGIN=https://<your-frontend>.onrender.com`, and the logo.dev keys |
+
+**Frontend — Static Site**
+
+| Setting | Value |
+|---|---|
+| Root Directory | `frontend` |
+| Build Command | `npm ci && npm run build` |
+| Publish Directory | `dist` |
+| Environment | `VITE_GOOGLE_CLIENT_ID`, `VITE_API_BASE_URL=/api/v1` |
+
+Then add two rules under the static site's **Redirects/Rewrites**, in this order:
+
+| Source | Destination | Action |
+|---|---|---|
+| `/api/*` | `https://<your-backend>.onrender.com/api/*` | Rewrite |
+| `/*` | `/index.html` | Rewrite |
+
+Finally, add the frontend URL to the Google OAuth client's **Authorized JavaScript origins** and publish the OAuth consent screen. Migrations run in the build step; `alembic upgrade head` does nothing when the database is already up to date.
 
 ## 🤝 Contributing
 
