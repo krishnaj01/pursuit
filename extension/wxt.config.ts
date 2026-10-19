@@ -2,13 +2,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { loadEnv } from 'vite'
 import { defineConfig } from 'wxt'
 
-// Keep in sync with JOB_SITE_PATTERNS in lib/config.ts.
-const JOB_SITE_PATTERNS = [
-  'https://*.greenhouse.io/*',
-  'https://*.lever.co/*',
-  'https://*.ashbyhq.com/*',
-  'https://*.myworkdayjobs.com/*',
-]
+import { JOB_SITE_PATTERNS } from './lib/job-sites'
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],

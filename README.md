@@ -197,15 +197,26 @@ Open <http://localhost:5173>. In development, Vite proxies `/api` to the backend
 
 ## 🧩 Browser extension
 
-Log an application straight from the job page: click the Pursuit icon and the company, role and
-link are filled in — or turn on the optional auto-prompt to get a "Log this to Pursuit?" card
-right after you submit on Greenhouse, Lever, Ashby or Workday. It warns about duplicates and
-only ever saves on your click. Setup, development and Chrome Web Store publishing steps are in
-[`extension/README.md`](extension/README.md).
+Log applications without retyping them. The Chrome extension (also works in Edge, Brave and
+other Chromium browsers) adds two ways in:
+
+- **One click on any job page** — click the Pursuit icon and the company, role, job link and
+  today's date are filled in from the page. Pick a reminder, add notes, save.
+- **Auto-prompt after you apply** *(optional)* — on Greenhouse, Lever, Ashby and Workday, a small
+  "Log to Pursuit?" card appears once the "application submitted" message shows up.
+
+It warns when a job is already in your pipeline, never saves without your click, and connects
+to your account with a token you can disconnect from your profile. At install it only asks for
+access to your Pursuit site; the job-board permission is requested only if you turn on
+auto-prompt, and is limited to the job-board subdomains (e.g. `jobs.lever.co`, not all of
+`lever.co`). What it reads, changes and sends on those pages — and why Chrome words the prompt
+as "read and change your data" — is explained in
+[`extension/README.md`](extension/README.md#permissions-explained), along with development and
+Chrome Web Store publishing steps.
 
 ## 🔒 Privacy
 
-Pursuit stores only what it needs: your Google name, email and photo; the applications you add; and your timezone. Logo lookups send only a company name or website to logo.dev or Google's favicon service. There's one sign-in cookie and no analytics. You can export or delete everything from your profile at any time.
+Pursuit stores only what it needs: your Google name, email and photo; the applications you add; and your timezone. Logo lookups send only a company name or website to logo.dev or Google's favicon service. The browser extension reads a job page only when you click it (or, with auto-prompt on, watches job-board pages for the "application submitted" message) and sends details only to your account, only when you save. There's one sign-in cookie and no analytics. You can export or delete everything from your profile at any time.
 
 ## 🗂️ Project structure
 

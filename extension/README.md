@@ -18,11 +18,54 @@ Details are read in this order: schema.org `JobPosting` JSON-LD → known job-si
 page title/meta tags. Everything stays editable before saving.
 
 **Permissions.** At install: `storage`, `activeTab`, `scripting` and your Pursuit site only.
-The four job-site hosts are optional and requested only when you turn on *Auto-prompt*.
+Job-board sites are optional and requested only when you turn on *Auto-prompt* — see
+[Permissions, explained](#permissions-explained).
 
 **Sign-in.** The extension uses a personal access token from Pursuit's `/extension/connect`
 page (stored hashed on the server, revocable from your profile). It can log and look up
 applications — it can't export data, delete the account or create more tokens.
+
+## Permissions, explained
+
+| Permission | When | Why |
+|---|---|---|
+| `activeTab` | Install (no warning) | Read the job page you're on, only at the moment you click the Pursuit icon. |
+| `scripting` | Install | Inject the code that reads that page, and register the optional job-site script. |
+| `storage` | Install | Keep your connection token and the auto-prompt setting. |
+| Your Pursuit site | Install | Save applications to your account; receive the token from the Connect page. |
+| Job-board sites | Only if you turn on **Auto-prompt** | Notice the "application submitted" moment and offer to log it. |
+
+### The job-board permission
+
+Turning on auto-prompt makes Chrome ask to **"Read and change your data"** on:
+
+- `job-boards.greenhouse.io`, `job-boards.eu.greenhouse.io`, `boards.greenhouse.io`
+- `jobs.lever.co`, `jobs.eu.lever.co`
+- `jobs.ashbyhq.com`
+- `*.myworkdayjobs.com` (Workday gives each company its own subdomain)
+
+Chrome uses that wording for **any** extension that runs on a site — there's no read-only
+version of this permission. Here's what Pursuit actually does there:
+
+- **Reads** the page address, the job's title and company (from the page heading or the
+  site's structured job data), and the visible page text — to spot "Thank you for applying" or
+  "Application submitted". It does **not** read what you type into application forms.
+- **Changes** one thing: it adds a small "Log to Pursuit?" card in the bottom-right corner after
+  you submit. The card lives in its own Shadow DOM (the site can't style it, it can't affect
+  the site) and goes away when dismissed. It never edits, fills, clicks or submits anything.
+- **Sends** nothing on its own. Only when you click **Log to Pursuit** does it send the company,
+  role and job link — to your own Pursuit account, nowhere else.
+
+The access is scoped to the job-board subdomains above — not the rest of those companies'
+websites — and can be switched off any time from the popup (which also gives the permission
+back to Chrome).
+
+**If you click Deny,** everything else keeps working: the toolbar button reads the page you're
+on through `activeTab`, which needs no permission prompt.
+
+The list lives in [`lib/job-sites.ts`](lib/job-sites.ts) (used by both the manifest and the
+runtime code); `lib/job-sites.test.ts` checks it covers the supported job pages and nothing
+broader.
 
 ## Develop
 

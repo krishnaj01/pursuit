@@ -37,9 +37,12 @@ Save job applications the user is viewing or has just submitted to the user's Pu
 - `storage` — keep the user's Pursuit connection token and the auto-prompt setting.
 - Host permission for `your-pursuit-domain` — send saved applications to the user's Pursuit
   account and receive the connection token from Pursuit's Connect page.
-- Optional host permissions (`*.greenhouse.io`, `*.lever.co`, `*.ashbyhq.com`,
-  `*.myworkdayjobs.com`) — only if the user turns on auto-prompt: detect the "application
-  submitted" confirmation on these job sites and offer to log it.
+- Optional host permissions (`job-boards.greenhouse.io`, `job-boards.eu.greenhouse.io`,
+  `boards.greenhouse.io`, `jobs.lever.co`, `jobs.eu.lever.co`, `jobs.ashbyhq.com`,
+  `*.myworkdayjobs.com`) — requested only if the user turns on auto-prompt. Used to detect the
+  "application submitted" confirmation on these job-board pages and show a small "Log to
+  Pursuit?" card. The extension doesn't read form inputs, doesn't modify the page beyond adding
+  that card, and sends nothing unless the user clicks to log the application.
 
 **Remote code:** No, the extension does not use remote code.
 
