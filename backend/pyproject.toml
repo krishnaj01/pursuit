@@ -1,0 +1,39 @@
+[project]
+name = "job-tracker-api"
+version = "0.1.0"
+description = "FastAPI backend for the job tracking platform"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.0",
+    "apscheduler>=3.11.3",
+    "asyncpg>=0.32.0",
+    "fastapi>=0.146.0",
+    "google-auth>=2.62.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.16.0",
+    "pydantic[email]>=2.14.1",
+    "pyjwt>=2.15.1",
+    "python-slugify>=9.1.3",
+    "requests>=2.34.2",
+    "sqlalchemy[asyncio]>=2.1.5",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[dependency-groups]
+dev = [
+    "aiosqlite>=0.22.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.17.1",
+]
