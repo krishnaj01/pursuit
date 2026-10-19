@@ -23,6 +23,7 @@ and get a gentle in-app nudge on the day it's time to check back in.
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169e1?logo=postgresql&logoColor=white" />
   <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-5a4bf0" />
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-16151a" /></a>
   <a href="https://github.com/krishnaj01/pursuit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/krishnaj01/pursuit?style=flat&color=d6f35d&labelColor=16151a" /></a>
 </p>
 
@@ -253,6 +254,10 @@ docs/screenshots/ images used in this README
 - A kanban board view with drag-and-drop between stages
 
 Found a bug or have a suggestion? [Open an issue](https://github.com/krishnaj01/pursuit/issues).
+
+## 📄 License
+
+Released under the [MIT License](LICENSE) — free to use, modify and share, with attribution.
 
 ## 👋 Author
 
