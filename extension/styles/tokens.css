@@ -1,0 +1,101 @@
+/* Pursuit design tokens for the extension popup — mirrors frontend/src/styles/globals.css.
+   Kept as a copy so the extension builds on its own; update both when the palette changes. */
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "tailwindcss";
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+:root {
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface-raised: #fbfaf7;
+  --surface-sunken: #efece5;
+  --fg: #16151a;
+  --fg-muted: #67646d;
+  --fg-subtle: #9a97a0;
+  --fg-on-accent: #ffffff;
+  --border: #e4e0d8;
+  --border-strong: #d2cdc3;
+  --ring: #6a5cff;
+  --accent: #5a4bf0;
+  --accent-hover: #4a3be0;
+  --accent-soft: #ece9ff;
+  --highlight: #d6f35d;
+  --highlight-fg: #1d2400;
+  --success: #11865b;
+  --warning: #b8630b;
+  --danger: #d43a3a;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0b0e;
+    --surface: #131317;
+    --surface-raised: #18181d;
+    --surface-sunken: #0f0f12;
+    --fg: #edebe6;
+    --fg-muted: #9b98a3;
+    --fg-subtle: #66636d;
+    --fg-on-accent: #0b0b0e;
+    --border: #24242b;
+    --border-strong: #33333c;
+    --ring: #9d93ff;
+    --accent: #9d93ff;
+    --accent-hover: #b2aaff;
+    --accent-soft: #221f3d;
+    --success: #3fcf8e;
+    --warning: #f0a440;
+    --danger: #ff6b6b;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-on-accent: var(--fg-on-accent);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-highlight: var(--highlight);
+  --color-highlight-fg: var(--highlight-fg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+}
+
+@layer base {
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg placeholder:text-subtle transition-colors hover:border-border-strong focus:border-accent focus:outline-none;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-muted;
+  }
+}

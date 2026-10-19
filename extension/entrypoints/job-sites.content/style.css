@@ -1,0 +1,79 @@
+/* In-page prompt on job sites. Lives in a Shadow DOM, so it neither inherits nor leaks
+   styles; colours mirror the Pursuit design tokens. */
+:host {
+  all: initial;
+  --bg: #ffffff;
+  --fg: #16151a;
+  --muted: #67646d;
+  --border: #e4e0d8;
+  --accent: #5a4bf0;
+  --accent-hover: #4a3be0;
+  --on-accent: #ffffff;
+  --success: #11865b;
+  --danger: #d43a3a;
+  --shadow: 0 2px 4px rgb(22 21 26 / 0.06), 0 24px 48px -16px rgb(22 21 26 / 0.3);
+  --font: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :host {
+    --bg: #18181d;
+    --fg: #edebe6;
+    --muted: #9b98a3;
+    --border: #2c2c34;
+    --accent: #9d93ff;
+    --accent-hover: #b2aaff;
+    --on-accent: #0b0b0e;
+    --success: #3fcf8e;
+    --danger: #ff6b6b;
+  }
+}
+.card {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483647;
+  width: 320px;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: var(--shadow);
+  font: 14px/1.45 var(--font);
+  animation: rise 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}
+.head { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.mark {
+  display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px;
+  background: var(--fg); color: var(--bg); font-size: 12px;
+}
+.close {
+  margin-left: auto; border: 0; background: none; color: var(--muted); cursor: pointer;
+  font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 6px;
+}
+.close:hover { color: var(--fg); }
+.job { margin: 10px 0 14px; }
+.role { font-weight: 600; }
+.company, .note { color: var(--muted); font-size: 13px; }
+.actions { display: flex; gap: 8px; }
+button.primary, a.primary {
+  flex: 1; border: 0; border-radius: 9px; padding: 9px 12px; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); font: 600 13px var(--font);
+  text-align: center; text-decoration: none;
+}
+button.primary:hover, a.primary:hover { background: var(--accent-hover); }
+button.primary:disabled { opacity: 0.6; cursor: default; }
+button.secondary {
+  border: 1px solid var(--border); border-radius: 9px; padding: 9px 12px; cursor: pointer;
+  background: transparent; color: var(--fg); font: 500 13px var(--font);
+}
+.ok { color: var(--success); font-weight: 600; }
+.error { color: var(--danger); }

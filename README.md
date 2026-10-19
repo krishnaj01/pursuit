@@ -47,6 +47,7 @@ Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps
 | 🔔 **Timely nudges** | A daily in-app digest lists everything due — worked out in *your* timezone. After checking in, schedule the next nudge in 3, 5, 7 or 15 days, pick a date, or turn it off. |
 | 🧭 **Stages that move your reminders** | OA, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. **Awaiting** marks that you're waiting to hear back and asks when to follow up. Offers and rejections close an application. |
 | 🕰️ **Editable timeline** | Every stage change is recorded. Fix a date, rename a custom stage, or remove an entry logged by mistake — the application stays in sync. |
+| 🧩 **Browser extension** | Log from any job page in one click, or get prompted right after you apply on Greenhouse, Lever, Ashby or Workday. |
 | 📝 **Notes & job links at a glance** | Save the job posting's link and your notes with each application. Small icons mark them in the pipeline — hover or tap to read notes or open the posting, with one-click copy. |
 | 🏢 **Company logos** | Fetched once per company from logo.dev (falling back to Google favicons), stored as tiny 128 px WebP images and served from memory. Keep it, replace it with your own URL, or remove it. |
 | 📊 **Honest stats** | Response and offer rates, applications per week, where things stand, and what's coming up. |
@@ -190,6 +191,14 @@ Open <http://localhost:5173>. In development, Vite proxies `/api` to the backend
 | You delete the latest timeline entry | back to the previous stage's event (if still upcoming), otherwise a check-in in 7 days |
 
 "Today" is always *your* today: the browser's timezone is saved at sign-in. The day's digest is built the first time you open Pursuit that day, so there's no background job to run or keep alive.
+
+## 🧩 Browser extension
+
+Log an application straight from the job page: click the Pursuit icon and the company, role and
+link are filled in — or turn on the optional auto-prompt to get a "Log this to Pursuit?" card
+right after you submit on Greenhouse, Lever, Ashby or Workday. It warns about duplicates and
+only ever saves on your click. Setup, development and Chrome Web Store publishing steps are in
+[`extension/README.md`](extension/README.md).
 
 ## 🔒 Privacy
 

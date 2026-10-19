@@ -1,0 +1,10 @@
+@import "../../styles/tokens.css";
+
+/* Chrome applies its own font stylesheet to extension pages; an unlayered rule is needed
+   to win over it (the body rule in tokens.css lives in a cascade layer). */
+html,
+body {
+  width: 380px;
+  margin: 0;
+  font-family: var(--font-sans);
+}

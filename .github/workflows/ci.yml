@@ -52,3 +52,21 @@ jobs:
       - run: npm run build
         env:
           VITE_GOOGLE_CLIENT_ID: ci-placeholder.apps.googleusercontent.com
+
+  extension:
+    name: Extension · typecheck, tests & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run zip
