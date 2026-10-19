@@ -1,104 +1,261 @@
-# Pursuit — Job application tracker
+<div align="center">
 
-Track job applications, move them through stages, and get in-app reminders to follow up.
+<img src="frontend/public/favicon.svg" alt="Pursuit logo" width="72" height="72" />
 
-- **Google sign-in.** Google Identity Services issues an ID token, the backend verifies it and sets an httpOnly JWT cookie.
-- **Log application.** Add the company, role, date applied and the first reminder. The reminder counts from the day you add the application (3 / 5 / 7 / 15 days, a custom number of days, an exact date, or no reminder).
-- **Pipeline.** A paginated table (10 / 20 / 50 rows per page) sorted by the next reminder. Change the stage inline. Every stage except Applied, Offer and Rejected asks for a date (OA, interview, deadline…) and moves the reminder to that date, unless you switch the reminder off.
-- **Editable timeline.** Each application's stage history can be corrected: change when something happened, the event date or a custom stage's name, or delete an entry logged by mistake. The latest entry is always the current stage.
-- **Reminders.** One in-app digest per day lists every application due, based on each user's own timezone. After a reminder, you can schedule the next check-in. Offers and rejections count as closed: they get no more reminders and move to the Closed tab.
-- **Profile.** Totals, response and offer rates, applications per week, stage breakdown and upcoming events.
-- **Your data.** Export every application (with its timeline) as CSV, or permanently delete the account and everything in it, from the Profile page. The login page explains what's stored and why.
-- **Company logos.** Each logo is fetched once per domain from logo.dev (falling back to Google favicons) and stored in Postgres as small 128 px WebP images. The app serves logos from its own endpoint. You can keep the fetched logo, replace it with an image URL, or remove it.
+# Pursuit
 
-## Stack
+**Apply widely. Follow up wisely.**
+
+A personal job-application tracker: log where you applied, move each application through its stages,<br />
+and get a gentle in-app nudge on the day it's time to check back in.
+
+<p>
+  <a href="#-quick-start"><strong>Quick start</strong></a> ·
+  <a href="#-features"><strong>Features</strong></a> ·
+  <a href="#-how-reminders-work"><strong>Reminders</strong></a> ·
+  <a href="#-contributing"><strong>Contributing</strong></a>
+</p>
+
+<p>
+  <img alt="React" src="https://img.shields.io/badge/React_19-20232a?logo=react&logoColor=61dafb" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_v4-0f172a?logo=tailwindcss&logoColor=38bdf8" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169e1?logo=postgresql&logoColor=white" />
+  <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-5a4bf0" />
+  <a href="https://github.com/krishnaj01/pursuit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/krishnaj01/pursuit?style=flat&color=d6f35d&labelColor=16151a" /></a>
+</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/pipeline-dark.webp" />
+  <img alt="The Pursuit pipeline: applications sorted by their next reminder, with stages, logos and due follow-ups" src="docs/screenshots/pipeline-light.webp" />
+</picture>
+
+</div>
+
+## Why Pursuit?
+
+Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps it to the one question that matters each day — **what needs my attention today?** — and stays deliberately small: no job board, no resume builder, no feed. Just your applications, your timeline and your nudges.
+
+## ✨ Features
 
 | | |
 |---|---|
-| Frontend | React + TypeScript (Vite), Tailwind CSS v4, React Router, TanStack Query & Table, zustand, react-hook-form + zod, Radix UI, Recharts, sonner |
-| Backend | FastAPI, SQLAlchemy 2 (async, asyncpg), Alembic, pydantic-settings, google-auth, PyJWT, APScheduler, httpx |
-| Database | PostgreSQL |
+| 🗂️ **One pipeline** | Every application in a single table, sorted by the next reminder. Filter by due, upcoming or closed, search, and page through 10 / 20 / 50 rows. Phones and tablets get a card layout. |
+| 🔔 **Timely nudges** | A daily in-app digest lists everything due — worked out in *your* timezone. After checking in, schedule the next nudge in 3, 5, 7 or 15 days, pick a date, or turn it off. |
+| 🧭 **Stages that move your reminders** | OA cleared, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. Offers and rejections close an application. |
+| 🕰️ **Editable timeline** | Every stage change is recorded. Fix a date, rename a custom stage, or remove an entry logged by mistake — the application stays in sync. |
+| 📝 **Notes at a glance** | A small note icon marks applications with notes; hover or tap to read them, with clickable links and one-click copy. |
+| 🏢 **Company logos** | Fetched once per company from logo.dev (falling back to Google favicons), stored as tiny 128 px WebP images and served from memory. Keep it, replace it with your own URL, or remove it. |
+| 📊 **Honest stats** | Response and offer rates, applications per week, where things stand, and what's coming up. |
+| 🔒 **Your data, your call** | Google sign-in, one httpOnly session cookie, no ads or tracking. Export everything as CSV or delete your account and all its data from your profile. |
+| 🌗 **Light & dark** | A considered design system in both themes, with a system-follow option. |
 
-## Project layout
+## 📸 Screenshots
 
-```
-backend/
-  app/
-    api/v1/      # routers: auth, applications, notifications, stats, logos
-    core/        # settings, JWT + Google token verification, dependencies
-    db/          # declarative base, async session
-    models/      # SQLAlchemy models
-    schemas/     # pydantic request/response models
-    services/    # reminder rules, notification digests, logo cache, stats
-    jobs/        # APScheduler reminder-digest job
-  alembic/       # migrations
-  tests/
-frontend/
-  src/
-    api/         # React Query hooks per resource
-    components/  # ui/ primitives, layout/, applications/, stats/
-    lib/         # axios client, query client, constants, helpers
-    pages/       # Login, Log application, Pipeline, Profile
-    stores/      # zustand: auth, theme, pipeline UI
-    styles/      # globals.css — all design tokens (light + dark)
-```
+<table>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/log-dark.webp" />
+        <img alt="Log an application with logo lookup and reminder presets" src="docs/screenshots/log-light.webp" />
+      </picture>
+      <p align="center"><sub><b>Log an application</b> — logo lookup and reminder presets</sub></p>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/profile-dark.webp" />
+        <img alt="Profile with stats, weekly chart and stage breakdown" src="docs/screenshots/profile-light.webp" />
+      </picture>
+      <p align="center"><sub><b>Profile</b> — stats, weekly activity and where things stand</sub></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/notes-dark.webp" />
+        <img alt="Hovering the note icon shows the application's notes" src="docs/screenshots/notes-light.webp" />
+      </picture>
+      <p align="center"><sub><b>Notes</b> — hover or tap the icon to read them</sub></p>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/login-dark.webp" />
+        <img alt="Sign-in page" src="docs/screenshots/login-light.webp" />
+      </picture>
+      <p align="center"><sub><b>Sign in</b> — with a plain-language privacy note</sub></p>
+    </td>
+  </tr>
+</table>
 
-## Setup
+<details>
+<summary><b>On mobile</b></summary>
+<br />
+<p align="center">
+  <img alt="Pipeline on mobile, light" src="docs/screenshots/mobile-light.webp" width="260" />
+  &nbsp;&nbsp;
+  <img alt="Pipeline on mobile, dark" src="docs/screenshots/mobile-dark.webp" width="260" />
+</p>
+</details>
 
-### 1. Google OAuth client
+<sub>Screenshots use demo data.</sub>
 
-1. In Google Cloud Console, open **APIs & Services → Credentials → Create credentials → OAuth client ID** and choose **Web application**.
-2. Under **Authorized JavaScript origins**, add `http://localhost:5173` (plus your production origin later). No redirect URI is needed.
-3. Use the client ID as both `GOOGLE_CLIENT_ID` (backend) and `VITE_GOOGLE_CLIENT_ID` (frontend).
+## 🧱 Tech stack
 
-### 2. Backend
+| Layer | Built with |
+|---|---|
+| **Frontend** | React 19 + TypeScript (Vite), Tailwind CSS v4, React Router, TanStack Query & Table, zustand, react-hook-form + zod, Radix UI, react-day-picker, Recharts, sonner |
+| **Backend** | FastAPI, SQLAlchemy 2 (async) + asyncpg, Alembic, pydantic-settings, google-auth, PyJWT, APScheduler, httpx, Pillow |
+| **Database** | PostgreSQL (any provider — local, Neon, Supabase, RDS…) |
+| **Tooling** | uv, Ruff, pytest, oxlint |
 
-Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+## 🚀 Quick start
+
+**You'll need:** Python 3.12+ with [uv](https://docs.astral.sh/uv/), Node 20+, a PostgreSQL database URL, and a Google OAuth client ID.
+
+### 1. Create a Google OAuth client
+
+1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials), go to **Credentials → Create credentials → OAuth client ID → Web application**.
+2. Under **Authorized JavaScript origins**, add `http://localhost:5173` and `http://localhost`. No redirect URI is needed — sign-in uses Google's popup button.
+3. Copy the client ID; it's used by both the backend and the frontend.
+
+### 2. Run the backend
 
 ```bash
 cd backend
-cp .env.example .env        # set DATABASE_URL, GOOGLE_CLIENT_ID, JWT_SECRET, logo.dev keys
+cp .env.example .env              # then fill it in (see below)
 uv sync
 uv run alembic upgrade head
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-`DATABASE_URL` can be a plain `postgres://` / `postgresql://` URL. It's switched to the asyncpg driver automatically, and `sslmode=require` is translated for hosted providers such as Neon.
+API docs live at <http://localhost:8000/docs>.
 
-API docs: http://localhost:8000/docs
-
-After pulling changes, run `uv run alembic upgrade head` again. The backend logs an error at startup if the database is behind the code's migrations.
-
-### 3. Frontend
-
-Requires Node 20+.
+### 3. Run the frontend
 
 ```bash
 cd frontend
-cp .env.example .env        # set VITE_GOOGLE_CLIENT_ID
+cp .env.example .env              # set VITE_GOOGLE_CLIENT_ID
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173. In development, Vite proxies `/api` to the backend, so the session cookie is same-origin.
+Open <http://localhost:5173>. In development, Vite proxies `/api` to the backend, so the session cookie is same-origin.
 
-## Checks
+### Environment variables
 
-```bash
-cd backend && uv run pytest && uv run ruff check .
-cd frontend && npm run lint && npm run build
+<details>
+<summary><b>backend/.env</b></summary>
+
+| Variable | Required | Description |
+|---|:---:|---|
+| `DATABASE_URL` | ✅ | PostgreSQL URL. `postgres://` / `postgresql://` are switched to asyncpg automatically, and `sslmode=require` is handled for hosts like Neon. |
+| `GOOGLE_CLIENT_ID` | ✅ | Your OAuth client ID. |
+| `JWT_SECRET` | ✅ | At least 32 random characters: `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
+| `JWT_EXPIRE_MINUTES` | | Session length (default 7 days). |
+| `COOKIE_SECURE` | | `true` in production (HTTPS-only cookie). |
+| `FRONTEND_ORIGIN` | | The frontend's origin, for CORS (default `http://localhost:5173`). |
+| `LOGO_DEV_PUBLISHABLE_KEY` | | [logo.dev](https://logo.dev) key for logos. Without it, Google favicons are used. |
+| `LOGO_DEV_SECRET_KEY` | | Optional; enables company-name → website search. |
+
+</details>
+
+<details>
+<summary><b>frontend/.env</b></summary>
+
+| Variable | Required | Description |
+|---|:---:|---|
+| `VITE_GOOGLE_CLIENT_ID` | ✅ | Same OAuth client ID as the backend. |
+| `VITE_API_BASE_URL` | | Keep `/api/v1` in development; set the full API URL if it's on another origin. |
+| `VITE_DEV_API_PROXY` | | Where the dev server proxies `/api` (default `http://localhost:8000`). |
+
+</details>
+
+> [!TIP]
+> After pulling changes, run `uv run alembic upgrade head` again. The backend logs a clear error at startup if the database is behind the code.
+
+## 🔔 How reminders work
+
+| When… | …the next reminder is |
+|---|---|
+| You add an application | today + the days you chose, a custom date, or none |
+| It moves to a dated stage (OA, assignment, hackathon, rounds, interview, custom) | that event's date — unless you switch the reminder off |
+| It moves back to Applied | unchanged |
+| It becomes an Offer or is Rejected | none — the application is closed |
+| You click **Set next** / **Reschedule** | 3 / 5 / 7 / 15 days from today, a date you pick, or none |
+| You edit the latest timeline entry's date | moves with it |
+| You delete the latest timeline entry | back to the previous stage's event (if still upcoming), otherwise a check-in in 7 days |
+
+"Today" is always *your* today: the browser's timezone is saved at sign-in. A background job builds each day's digest, and it's also built on demand, so reminders show up even after downtime.
+
+## 🔒 Privacy
+
+Pursuit stores only what it needs: your Google name, email and photo; the applications you add; and your timezone. Logo lookups send only a company name or website to logo.dev or Google's favicon service. There's one sign-in cookie and no analytics. You can export or delete everything from your profile at any time.
+
+## 🗂️ Project structure
+
+<details>
+<summary>Show the layout</summary>
+
+```
+backend/
+  app/
+    api/v1/       routers: auth, account, applications, notifications, stats, logos
+    core/         settings, JWT + Google token verification, dependencies
+    db/           base model, async session, migration check
+    models/       SQLAlchemy models
+    schemas/      pydantic request/response models
+    services/     reminders, timeline, notifications, logos, stats, account
+    jobs/         APScheduler reminder-digest job
+  alembic/        migrations
+  tests/          pytest suite
+frontend/
+  src/
+    api/          React Query hooks per resource
+    components/   ui primitives, layout, applications, stats, profile, auth
+    lib/          API client, query keys, constants, helpers
+    pages/        Login, Log application, Pipeline, Profile
+    stores/       zustand: auth, theme, pipeline UI
+    styles/       globals.css — every design token, light and dark
+docs/screenshots/ images used in this README
 ```
 
-## How reminders work
+</details>
 
-| Event | Next reminder |
-|---|---|
-| Application added | today + chosen days, a custom date, or none |
-| Stage → OA cleared / assignment / hackathon / round 1 / round 2 / interview / custom | the event date you enter (or none, if you switch the reminder off) |
-| Stage → Applied | unchanged |
-| Stage → Offer or Rejected (closed) | none |
-| "Set next" / "Reschedule" | today + 3 / 5 / 7 / 15 days, a custom date, or no reminder |
-| Latest timeline entry's event date edited | moves with it (if you're being reminded about that event) |
-| Latest timeline entry deleted | the stage reverts to the previous entry: its event date if still upcoming, otherwise a status check in 7 days |
+## 🌐 Deploying
 
-"Today" is worked out in each user's timezone, which the browser reports at sign-in. A background job runs hourly to create digests, and they're also created the first time notifications are fetched each day, so they appear even if the server was down.
+- Add your production URL to the OAuth client's **Authorized JavaScript origins**, and publish the OAuth consent screen so anyone can sign in.
+- Set `COOKIE_SECURE=true` and `FRONTEND_ORIGIN=https://your-domain`.
+- Serving the frontend and API from the same domain (with `/api` routed to the backend) keeps the session cookie simple.
+- Run `uv run alembic upgrade head` on every deploy.
+- Optional: put a CDN in front of `/api/v1/logos/image/*` — those responses are already publicly cacheable.
+
+## 🤝 Contributing
+
+**PRs are welcome!** Bug fixes, polish and small, focused features that keep Pursuit a *personal* tracker are all appreciated.
+
+1. Fork the repo and create a branch: `git checkout -b feat/your-idea`
+2. Make your change — match the existing style, and keep colours and spacing in the design tokens (`frontend/src/styles/globals.css`).
+3. Run the checks:
+   ```bash
+   cd backend && uv run pytest && uv run ruff check .
+   cd frontend && npm run lint && npm run build
+   ```
+4. If you changed a model, add a migration: `uv run alembic revision --autogenerate -m "describe it"`.
+5. Open a pull request — the template will walk you through the rest. Screenshots help for UI changes.
+
+**Looking for an idea?** Some things that would fit nicely:
+
+- A job-posting link and "where I found it" source, with response rate by source
+- A *ghosted* outcome, suggested when nothing changes for a while
+- Duplicate warning when adding the same company and role twice
+- Calendar (`.ics`) export for interviews and deadlines
+- A kanban board view with drag-and-drop between stages
+
+Found a bug or have a suggestion? [Open an issue](https://github.com/krishnaj01/pursuit/issues).
+
+## 👋 Author
+
+Built by **Krishna Jhanwar** — [GitHub](https://github.com/krishnaj01) · [X](https://x.com/krishna_jh01) · [Portfolio](https://www.krishnajhanwar.tech/)
+
+If Pursuit helps your job hunt, a ⭐ on the repo goes a long way.
