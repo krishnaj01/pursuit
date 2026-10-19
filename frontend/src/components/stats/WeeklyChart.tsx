@@ -36,7 +36,7 @@ export function WeeklyChart({ weekly }: { weekly: Stats['weekly'] }) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 4, bottom: 0, left: -24 }}>
               <CartesianGrid vertical={false} stroke="var(--chart-grid)" />
-              <XAxis dataKey="week" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: 'var(--chart-grid)' }} interval="preserveStartEnd" />
+              <XAxis dataKey="week" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: 'var(--chart-grid)' }} interval="preserveStartEnd" minTickGap={24} />
               <YAxis allowDecimals={false} tick={AXIS_TICK} tickLine={false} axisLine={false} />
               <Tooltip
                 cursor={{ fill: 'var(--surface-sunken)' }}

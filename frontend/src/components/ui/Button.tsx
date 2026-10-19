@@ -38,8 +38,15 @@ export function Button({ className, variant, size, asChild, loading, children, d
       disabled={disabled || loading}
       {...props}
     >
-      {loading && <LoaderCircle className="animate-spin" />}
-      {children}
+      {asChild ? (
+        // Slot requires exactly one child element.
+        children
+      ) : (
+        <>
+          {loading && <LoaderCircle className="animate-spin" />}
+          {children}
+        </>
+      )}
     </Comp>
   )
 }

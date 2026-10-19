@@ -18,14 +18,14 @@ export function ProfilePage() {
   return (
     <>
       <Card className="relative mb-8 overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-accent-soft via-surface-raised to-highlight/25" />
-        <CardContent className="relative flex flex-wrap items-end gap-5 pt-12">
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-accent-soft via-accent-soft/50 to-transparent" />
+        <CardContent className="relative flex flex-wrap items-end gap-5 pt-16">
           <UserAvatar className="size-20 ring-4 ring-surface" />
           <div className="flex-1">
             <h1 className="text-3xl font-semibold">{user?.name}</h1>
             <p className="text-sm text-muted">{user?.email}</p>
           </div>
-          <div className="flex flex-col items-end gap-1 font-mono text-[11px] text-subtle">
+          <div className="flex flex-col gap-1 font-mono text-[11px] text-subtle sm:items-end">
             {user && <span>Member since {formatDate(user.created_at, 'MMM yyyy')}</span>}
             {user && <span>Reminders in {user.timezone}</span>}
           </div>

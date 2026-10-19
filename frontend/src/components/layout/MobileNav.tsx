@@ -7,7 +7,7 @@ import { NAV_ITEMS } from './navItems'
 export function MobileNav() {
   return (
     <nav className="fixed inset-x-3 bottom-3 z-30 flex justify-around rounded-xl border border-border bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl lg:hidden">
-      {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+      {NAV_ITEMS.map(({ to, shortLabel, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}
@@ -20,7 +20,7 @@ export function MobileNav() {
           }
         >
           <Icon className="size-4" />
-          {label.split(' ').at(-1)}
+          {shortLabel}
         </NavLink>
       ))}
     </nav>
