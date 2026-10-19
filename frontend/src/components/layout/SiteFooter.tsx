@@ -3,11 +3,13 @@ import { Globe } from 'lucide-react'
 
 import { IconLink } from '@/components/ui/IconLink'
 import { SOCIAL_LINKS } from '@/lib/socials'
+import { cn } from '@/lib/utils'
 
-export function SiteFooter() {
+export function SiteFooter({ className }: { className?: string }) {
   return (
-    <footer className="mt-16 flex flex-col items-center gap-4 border-t border-border pt-8 text-center">
-      <blockquote className="max-w-md font-display text-[15px] leading-relaxed text-muted italic">
+    <footer className={cn('mt-12 flex w-full flex-col items-center gap-3 border-t border-border pt-6 text-center', className)}>
+      {/* One line from tablet width up; phones are too narrow, so it wraps there. */}
+      <blockquote className="font-display text-[13px] leading-relaxed text-balance text-muted italic sm:text-[15px] sm:whitespace-nowrap">
         “Luck is what happens when preparation meets a well-timed follow-up.”
       </blockquote>
       <div className="flex items-center gap-1">

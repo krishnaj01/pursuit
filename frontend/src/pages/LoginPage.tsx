@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { useGoogleSignIn } from '@/api/auth'
 import { PrivacyNote } from '@/components/auth/PrivacyNote'
+import { SiteFooter } from '@/components/layout/SiteFooter'
 import { Logo } from '@/components/layout/Logo'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { errorMessage } from '@/lib/api'
@@ -26,13 +27,13 @@ export function LoginPage() {
   if (status === 'authenticated') return <Navigate to="/" replace />
 
   return (
-    <div className="relative flex min-h-dvh flex-col px-6 py-6 sm:px-10">
+    <div className="relative flex min-h-dvh flex-col px-6 pt-6 pb-4 sm:px-10">
       <header className="flex items-center justify-between">
         <Logo />
         <ThemeToggle />
       </header>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-14 py-16 text-center">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-14 pt-16 pb-8 text-center">
         <div className="flex flex-col items-center gap-6 animate-pop-in">
           <span className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-[11px] tracking-[0.16em] text-muted uppercase shadow-sm">
             Your job search, organised
@@ -79,6 +80,8 @@ export function LoginPage() {
 
         <PrivacyNote />
       </main>
+
+      <SiteFooter className="mx-auto mt-4 max-w-5xl" />
     </div>
   )
 }

@@ -24,7 +24,7 @@ export function AppShell() {
       <Sidebar />
       <div className="lg:pl-sidebar">
         <Topbar />
-        <main className="mx-auto w-full max-w-content px-4 pt-8 pb-28 sm:px-8 lg:pb-16">
+        <main className="mx-auto w-full max-w-content px-4 pt-8 pb-28 sm:px-8 lg:pb-8">
           <Outlet />
         </main>
       </div>
