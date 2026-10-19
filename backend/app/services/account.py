@@ -9,7 +9,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models import Application, Notification, StageEvent, User
+from app.models import ApiToken, Application, Notification, StageEvent, User
 from app.models.enums import ReminderKind, Stage
 
 STAGE_LABELS = {
@@ -58,6 +58,7 @@ async def delete_account(session: AsyncSession, user_id: uuid.UUID) -> None:
     await session.execute(delete(StageEvent).where(StageEvent.application_id.in_(app_ids)))
     await session.execute(delete(Application).where(Application.user_id == user_id))
     await session.execute(delete(Notification).where(Notification.user_id == user_id))
+    await session.execute(delete(ApiToken).where(ApiToken.user_id == user_id))
     await session.execute(delete(User).where(User.id == user_id))
     await session.commit()
 

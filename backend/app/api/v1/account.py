@@ -3,7 +3,7 @@ from datetime import date
 from fastapi import APIRouter, HTTPException, Response, status
 
 from app.core.config import get_settings
-from app.core.deps import CurrentUser, DbSession
+from app.core.deps import DbSession, SessionUser
 from app.schemas.account import DeleteAccountRequest
 from app.services.account import delete_account, export_applications_csv
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/account", tags=["account"])
 
 
 @router.get("/export.csv", response_class=Response)
-async def export_csv(db: DbSession, user: CurrentUser):
+async def export_csv(db: DbSession, user: SessionUser):
     content = await export_applications_csv(db, user.id)
     filename = f"pursuit-applications-{date.today().isoformat()}.csv"
     return Response(
@@ -27,7 +27,7 @@ async def export_csv(db: DbSession, user: CurrentUser):
 
 @router.delete("", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_my_account(
-    payload: DeleteAccountRequest, response: Response, db: DbSession, user: CurrentUser
+    payload: DeleteAccountRequest, response: Response, db: DbSession, user: SessionUser
 ) -> None:
     if payload.confirm_email.strip().lower() != user.email.lower():
         raise HTTPException(

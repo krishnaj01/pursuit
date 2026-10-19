@@ -1,5 +1,6 @@
 import uuid
 from typing import Annotated
+from urllib.parse import parse_qsl, urlencode, urlsplit
 
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import case, nulls_last, select
@@ -20,6 +21,28 @@ from app.schemas.application import (
 from app.services import reminders, timeline
 
 router = APIRouter(prefix="/applications", tags=["applications"])
+
+# Query parameters that only track where a click came from; they don't identify the job.
+TRACKING_PARAMS = ("utm_", "gh_src", "source", "ref", "src", "lever-source", "trk")
+
+
+def normalize_job_url(url: str) -> str:
+    """Compare job links loosely: ignore scheme, www., trailing slash, fragment and
+    tracking parameters, but keep parameters that identify the job (e.g. gh_jid)."""
+    parts = urlsplit(url.strip())
+    host = parts.netloc.lower().removeprefix("www.")
+    query = urlencode(
+        sorted(
+            (key, value)
+            for key, value in parse_qsl(parts.query, keep_blank_values=True)
+            if not key.lower().startswith(TRACKING_PARAMS)
+        )
+    )
+    return f"{host}{parts.path.rstrip('/')}?{query}"
+
+
+def _fold(text: str | None) -> str:
+    return " ".join((text or "").split()).casefold()
 
 
 async def _get_owned(db: DbSession, user: CurrentUser, app_id: uuid.UUID) -> Application:
@@ -98,6 +121,35 @@ async def create_application(payload: ApplicationCreate, db: DbSession, user: Cu
     )
     db.add(app)
     return await _save(db, app)
+
+
+@router.get("/lookup", response_model=list[ApplicationOut])
+async def lookup_applications(
+    db: DbSession,
+    user: CurrentUser,
+    job_url: Annotated[str | None, Query(max_length=2048)] = None,
+    company: Annotated[str | None, Query(max_length=200)] = None,
+    role: Annotated[str | None, Query(max_length=200)] = None,
+):
+    """Find applications that look like the one about to be logged (used by the extension
+    to warn about duplicates): the same job link, or the same company and role."""
+    if not job_url and not (company and role):
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, detail="Provide job_url, or both company and role"
+        )
+    apps = await db.scalars(
+        select(Application)
+        .where(Application.user_id == user.id)
+        .order_by(Application.created_at.desc())
+    )
+    wanted_url = normalize_job_url(job_url) if job_url else None
+    wanted_pair = (_fold(company), _fold(role)) if company and role else None
+    return [
+        app
+        for app in apps
+        if (wanted_url and app.job_url and normalize_job_url(app.job_url) == wanted_url)
+        or (wanted_pair and (_fold(app.company_name), _fold(app.role)) == wanted_pair)
+    ]
 
 
 @router.get("/{app_id}", response_model=ApplicationOut)

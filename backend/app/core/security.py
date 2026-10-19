@@ -1,3 +1,5 @@
+import hashlib
+import secrets
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
@@ -44,3 +46,17 @@ def decode_access_token(token: str) -> UUID:
         return UUID(payload["sub"])
     except (jwt.PyJWTError, KeyError, ValueError) as exc:
         raise InvalidTokenError("Invalid or expired session") from exc
+
+
+API_TOKEN_PREFIX = "pst_"
+API_TOKEN_DISPLAY_LENGTH = 12
+
+
+def hash_api_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def generate_api_token() -> tuple[str, str, str]:
+    """Return (plaintext token, display prefix, hash) for a new personal access token."""
+    token = API_TOKEN_PREFIX + secrets.token_urlsafe(32)
+    return token, token[:API_TOKEN_DISPLAY_LENGTH], hash_api_token(token)
