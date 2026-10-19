@@ -1,8 +1,14 @@
 import os
 
-os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
-os.environ.setdefault("GOOGLE_CLIENT_ID", "test-client-id")
-os.environ.setdefault("JWT_SECRET", "test-secret-" + "x" * 32)
+# Tests must never pick up a developer's real .env (database, Google or logo.dev keys):
+# explicit environment variables take precedence over the .env file in pydantic-settings.
+os.environ.update(
+    DATABASE_URL="sqlite+aiosqlite:///:memory:",
+    GOOGLE_CLIENT_ID="test-client-id",
+    JWT_SECRET="test-secret-" + "x" * 32,
+    LOGO_DEV_PUBLISHABLE_KEY="",
+    LOGO_DEV_SECRET_KEY="",
+)
 
 import pytest  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
