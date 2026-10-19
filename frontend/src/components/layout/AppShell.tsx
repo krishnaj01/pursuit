@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router'
 
 import { Skeleton } from '@/components/ui/Skeleton'
 import { useAuthStore } from '@/stores/authStore'
@@ -9,6 +9,7 @@ import { Topbar } from './Topbar'
 
 export function AppShell() {
   const status = useAuthStore((s) => s.status)
+  const location = useLocation()
 
   if (status === 'loading') {
     return (
@@ -17,7 +18,8 @@ export function AppShell() {
       </div>
     )
   }
-  if (status === 'anonymous') return <Navigate to="/login" replace />
+  // Remember where the user was headed (e.g. /extension/connect) to return after sign-in.
+  if (status === 'anonymous') return <Navigate to="/login" replace state={{ from: location.pathname }} />
 
   return (
     <div className="min-h-dvh">

@@ -1,5 +1,6 @@
 import { SiGithub, SiX } from '@icons-pack/react-simple-icons'
 import { Globe } from 'lucide-react'
+import { Link } from 'react-router'
 
 import { IconLink } from '@/components/ui/IconLink'
 import { SOCIAL_LINKS } from '@/lib/socials'
@@ -23,6 +24,9 @@ export function SiteFooter({ className }: { className?: string }) {
           <Globe />
         </IconLink>
       </div>
+      <Link to="/privacy" className="text-xs text-subtle underline-offset-4 transition-colors hover:text-fg hover:underline">
+        Privacy policy
+      </Link>
     </footer>
   )
 }

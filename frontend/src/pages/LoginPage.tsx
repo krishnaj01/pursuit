@@ -1,6 +1,6 @@
 import { GoogleLogin } from '@react-oauth/google'
 import { BellRing, KanbanSquare, LineChart } from 'lucide-react'
-import { Navigate } from 'react-router'
+import { Navigate, useLocation } from 'react-router'
 import { toast } from 'sonner'
 
 import { useGoogleSignIn } from '@/api/auth'
@@ -25,7 +25,11 @@ export function LoginPage() {
   const preference = useThemeStore((s) => s.preference)
   const isDark = document.documentElement.classList.contains('dark')
 
-  if (status === 'authenticated') return <Navigate to="/" replace />
+  const location = useLocation()
+  const from = (location.state as { from?: string } | null)?.from
+  const returnTo = from?.startsWith('/') && !from.startsWith('//') ? from : '/'
+
+  if (status === 'authenticated') return <Navigate to={returnTo} replace />
 
   return (
     <div className="relative flex min-h-dvh flex-col px-6 pt-6 pb-4 sm:px-10">

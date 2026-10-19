@@ -2,6 +2,7 @@ import { Briefcase, CalendarDays, Hourglass, MessagesSquare, Reply, Trophy } fro
 
 import { useStats } from '@/api/stats'
 import { UserAvatar } from '@/components/layout/UserMenu'
+import { ExtensionCard } from '@/components/extension/ExtensionCard'
 import { YourDataCard } from '@/components/profile/YourDataCard'
 import { StageBreakdown } from '@/components/stats/StageBreakdown'
 import { StatTile } from '@/components/stats/StatTile'
@@ -91,6 +92,7 @@ export function ProfilePage() {
               )}
             </CardContent>
           </Card>
+          <ExtensionCard />
           <YourDataCard />
         </div>
       )}
