@@ -17,6 +17,7 @@ and get a gentle in-app nudge on the day it's time to check back in.
 </p>
 
 <p>
+  <a href="https://github.com/krishnaj01/pursuit/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/krishnaj01/pursuit/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="React" src="https://img.shields.io/badge/React_19-20232a?logo=react&logoColor=61dafb" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white" />
   <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_v4-0f172a?logo=tailwindcss&logoColor=38bdf8" />
@@ -243,7 +244,7 @@ docs/screenshots/ images used in this README
    cd frontend && npm run lint && npm run build
    ```
 4. If you changed a model, add a migration: `uv run alembic revision --autogenerate -m "describe it"`.
-5. Open a pull request — the template will walk you through the rest. Screenshots help for UI changes.
+5. Open a pull request — the template will walk you through the rest. Screenshots help for UI changes. CI runs the same checks automatically on every PR.
 
 **Looking for an idea?** Some things that would fit nicely:
 
