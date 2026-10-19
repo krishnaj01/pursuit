@@ -1,5 +1,6 @@
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { Tooltip } from 'radix-ui'
 import { RouterProvider } from 'react-router'
 import { Toaster } from 'sonner'
 
@@ -18,7 +19,9 @@ export default function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
-        <Session />
+        <Tooltip.Provider delayDuration={250} skipDelayDuration={150}>
+          <Session />
+        </Tooltip.Provider>
         <Toaster
           theme={preference}
           position="bottom-right"

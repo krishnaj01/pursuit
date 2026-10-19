@@ -23,6 +23,7 @@ export function ReminderMenu({ application, emphasize }: { application: Applicat
 
   if (application.stage === 'rejected') return null
   const hasReminder = !!application.next_reminder_on
+  const buttonLabel = emphasize ? 'Set next' : hasReminder ? 'Reschedule' : 'Remind me'
 
   const schedule = (payload: ReminderUpdate) =>
     setReminder.mutateAsync({ id: application.id, ...payload }).then(
@@ -52,8 +53,14 @@ export function ReminderMenu({ application, emphasize }: { application: Applicat
     <>
       <Menu>
         <MenuTrigger asChild>
-          <Button variant={emphasize ? 'highlight' : 'secondary'} size="sm" aria-label="Set next reminder">
-            <BellPlus /> {emphasize ? 'Set next' : hasReminder ? 'Reschedule' : 'Remind me'}
+          <Button
+            variant={emphasize ? 'highlight' : 'secondary'}
+            size="sm"
+            aria-label={buttonLabel}
+            title={buttonLabel}
+            className="max-[1379px]:w-8 max-[1379px]:px-0"
+          >
+            <BellPlus /> <span className="hidden min-[1380px]:inline">{buttonLabel}</span>
           </Button>
         </MenuTrigger>
         <MenuContent align="end">

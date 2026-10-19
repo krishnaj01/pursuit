@@ -8,6 +8,7 @@ import {
 import { useMemo } from 'react'
 
 import { CompanyLogo } from '@/components/ui/CompanyLogo'
+import { TruncatedText } from '@/components/ui/TruncatedText'
 import { stageLabel } from '@/lib/stages'
 import { cn, daysFromToday, formatDate } from '@/lib/utils'
 import type { Application } from '@/types'
@@ -19,26 +20,43 @@ import { StageSelect } from './StageSelect'
 
 const isDue = (a: Application) => a.stage !== 'rejected' && !!a.next_reminder_on && daysFromToday(a.next_reminder_on) <= 0
 
+/** Fixed widths for content-sized columns; company and role share the remaining space.
+ *  The actions column narrows on smaller screens, where the reminder button goes icon-only. */
+const COLUMN_WIDTHS: Record<string, string> = {
+  applied_on: 'w-[7.5rem]',
+  stage: 'w-[10rem]',
+  reminder: 'w-[13rem]',
+  actions: 'w-[7.5rem] min-[1380px]:w-[12.5rem]',
+}
+
 const columns: ColumnDef<Application>[] = [
   {
     id: 'company',
     header: 'Company',
     accessorFn: (a) => `${a.company_name} ${a.company_domain ?? ''}`,
     cell: ({ row: { original: a } }) => (
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <CompanyLogo name={a.company_name} src={a.logo_url} />
-        <div className="min-w-0">
-          <p className="truncate font-medium">{a.company_name}</p>
-          {a.company_domain && <p className="truncate font-mono text-[11px] text-subtle">{a.company_domain}</p>}
+        <div className="min-w-0 flex-1">
+          <TruncatedText as="p" className="font-medium">{a.company_name}</TruncatedText>
+          {a.company_domain && <TruncatedText as="p" className="font-mono text-[11px] text-subtle">{a.company_domain}</TruncatedText>}
         </div>
       </div>
     ),
   },
-  { accessorKey: 'role', header: 'Role', cell: (info) => <span className="text-sm">{info.getValue<string>()}</span> },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: (info) => <TruncatedText className="text-sm">{info.getValue<string>()}</TruncatedText>,
+  },
   {
     accessorKey: 'applied_on',
     header: 'Applied',
-    cell: (info) => <span className="font-mono text-[13px] text-muted">{formatDate(info.getValue<string>(), 'd MMM yy')}</span>,
+    cell: (info) => (
+      <time dateTime={info.getValue<string>()} className="font-mono text-[13px] whitespace-nowrap text-muted">
+        {formatDate(info.getValue<string>(), 'd MMM yyyy')}
+      </time>
+    ),
   },
   {
     id: 'stage',
@@ -57,7 +75,7 @@ const columns: ColumnDef<Application>[] = [
     header: () => <span className="sr-only">Actions</span>,
     enableGlobalFilter: false,
     cell: ({ row }) => (
-      <div className="flex items-center justify-end gap-1">
+      <div className="flex items-center justify-end gap-1 whitespace-nowrap">
         <ReminderMenu application={row.original} emphasize={isDue(row.original)} />
         <RowActions application={row.original} />
       </div>
@@ -86,14 +104,19 @@ export function PipelineTable({ data, search, highlightedIds }: PipelineTablePro
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[56rem] border-separate border-spacing-0 text-left">
+      <table className="w-full min-w-[60rem] table-fixed border-separate border-spacing-0 text-left">
+        <colgroup>
+          {table.getVisibleLeafColumns().map((column) => (
+            <col key={column.id} className={COLUMN_WIDTHS[column.id]} />
+          ))}
+        </colgroup>
         <thead>
           {table.getHeaderGroups().map((group) => (
             <tr key={group.id}>
               {group.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="sticky top-0 border-b border-border bg-surface-raised px-4 py-3 font-mono text-[10px] font-medium tracking-[0.14em] text-subtle uppercase first:pl-6 last:pr-6"
+                  className="sticky top-0 border-b border-border bg-surface-raised px-4 py-3 font-mono text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-subtle uppercase first:pl-6 last:pr-6"
                 >
                   {flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
@@ -113,7 +136,7 @@ export function PipelineTable({ data, search, highlightedIds }: PipelineTablePro
               )}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border-b border-border px-4 py-3.5 align-middle first:pl-6 last:pr-6 group-last:border-b-0">
+                <td key={cell.id} className="h-[4.25rem] border-b border-border px-4 py-3 align-middle first:pl-6 last:pr-6 group-last:border-b-0">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

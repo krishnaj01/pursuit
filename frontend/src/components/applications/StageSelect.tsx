@@ -34,11 +34,11 @@ export function StageSelect({ application }: { application: Application }) {
     <>
       <Select.Root value={application.stage === 'custom' ? '' : application.stage} onValueChange={onValueChange}>
         <Select.Trigger
-          className="group inline-flex items-center gap-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group inline-flex max-w-full min-w-0 items-center gap-1 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={`Stage for ${application.company_name}`}
         >
           <StagePill stage={application.stage} customLabel={application.custom_stage_label} />
-          <ChevronDown className="size-3.5 text-subtle transition-transform group-data-[state=open]:rotate-180" />
+          <ChevronDown className="size-3.5 shrink-0 text-subtle transition-transform group-data-[state=open]:rotate-180" />
         </Select.Trigger>
         <Select.Portal>
           <Select.Content
