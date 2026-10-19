@@ -24,7 +24,7 @@ and get a gentle in-app nudge on the day it's time to check back in.
   <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169e1?logo=postgresql&logoColor=white" />
   <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-5a4bf0" />
-  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-16151a" /></a>
+  <a href="#-copyright--usage"><img alt="All rights reserved" src="https://img.shields.io/badge/license-all%20rights%20reserved-16151a" /></a>
   <a href="https://github.com/krishnaj01/pursuit/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/krishnaj01/pursuit?style=flat&color=d6f35d&labelColor=16151a" /></a>
 </p>
 
@@ -113,6 +113,9 @@ Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps
 | **Tooling** | uv, Ruff, pytest, oxlint |
 
 ## 🚀 Quick start
+
+> [!NOTE]
+> These steps are for running Pursuit locally to develop and contribute. Pursuit isn't open source — see [Copyright & usage](#-copyright--usage).
 
 **You'll need:** Python 3.12+ with [uv](https://docs.astral.sh/uv/), Node 20+, a PostgreSQL database URL, and a Google OAuth client ID.
 
@@ -279,19 +282,50 @@ Finally, add the frontend URL to the Google OAuth client's **Authorized JavaScri
 4. If you changed a model, add a migration: `uv run alembic revision --autogenerate -m "describe it"`.
 5. Open a pull request — the template will walk you through the rest. Screenshots help for UI changes. CI runs the same checks automatically on every PR.
 
+By opening a pull request you agree to the [contribution terms](#contributions) below.
+
 **Looking for an idea?** Some things that would fit nicely:
 
-- A job-posting link and "where I found it" source, with response rate by source
+- A "where I found it" source (LinkedIn, referral, careers page…), with response rate by source
 - A *ghosted* outcome, suggested when nothing changes for a while
-- Duplicate warning when adding the same company and role twice
+- A duplicate warning in the Log application form (the extension already has one)
 - Calendar (`.ics`) export for interviews and deadlines
 - A kanban board view with drag-and-drop between stages
 
 Found a bug or have a suggestion? [Open an issue](https://github.com/krishnaj01/pursuit/issues).
 
-## 📄 License
+## 📜 Copyright & usage
 
-Released under the [MIT License](LICENSE) — free to use, modify and share, with attribution.
+**Copyright © 2026 Krishna Jhanwar. All rights reserved.**
+
+This repository is public so you can read the code and contribute to it. It is **not open
+source**: no license is granted to use, copy, modify or distribute it, apart from the limited
+permissions below.
+
+**You may**
+
+- view and read the code on GitHub;
+- fork the repository on GitHub, and run it locally, **only** to prepare a pull request to this
+  repository.
+
+**You may not, without prior written permission**
+
+- copy, republish or redistribute this code — in whole or in substantial part — in another
+  repository, package, website or product;
+- deploy, host or offer Pursuit (or a modified version of it) as a service;
+- sell, sublicense or otherwise commercialise it;
+- present this project, or work derived from it, as your own;
+- remove or alter this copyright notice.
+
+### Contributions
+
+By submitting a pull request, you confirm that the contribution is your own original work (or
+that you have the right to submit it), and you grant Krishna Jhanwar a perpetual, worldwide,
+irrevocable, royalty-free right to use, modify, distribute and relicense it as part of Pursuit.
+You'll be credited in the project's history.
+
+Want to use Pursuit in a way not covered here? [Open an issue](https://github.com/krishnaj01/pursuit/issues)
+to ask for permission.
 
 ## 👋 Author
 

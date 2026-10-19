@@ -22,3 +22,4 @@
 - [ ] Colours, spacing and fonts use the design tokens in `frontend/src/styles/globals.css`
 - [ ] Works in light and dark mode, and on a phone-sized screen
 - [ ] No secrets or `.env` files are included
+- [ ] I agree to the [contribution terms](https://github.com/krishnaj01/pursuit#contributions) — this is my own work and Krishna Jhanwar may use, modify and distribute it as part of Pursuit
