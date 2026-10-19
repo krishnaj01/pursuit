@@ -12,6 +12,7 @@ interface StageMeta {
 
 export const STAGES: Record<Stage, StageMeta> = {
   applied: { label: 'Applied', color: 'var(--stage-applied)' },
+  awaiting: { label: 'Awaiting', color: 'var(--stage-awaiting)' },
   oa_cleared: { label: 'OA cleared', color: 'var(--stage-oa)', datePrompt: 'When is the next step after the OA?' },
   assignment: { label: 'Assignment', color: 'var(--stage-assignment)', datePrompt: 'When is the assignment due?' },
   hackathon: { label: 'Hackathon', color: 'var(--stage-hackathon)', datePrompt: 'When is the hackathon?' },
@@ -25,6 +26,7 @@ export const STAGES: Record<Stage, StageMeta> = {
 
 export const STAGE_ORDER: Stage[] = [
   'applied',
+  'awaiting',
   'oa_cleared',
   'assignment',
   'hackathon',
@@ -40,7 +42,7 @@ export const STAGE_ORDER: Stage[] = [
 export const CLOSED_STAGES: ReadonlySet<Stage> = new Set(['offer', 'rejected'])
 
 /** Stages that don't need an accompanying event date. */
-export const UNDATED_STAGES: ReadonlySet<Stage> = new Set(['applied', ...CLOSED_STAGES])
+export const UNDATED_STAGES: ReadonlySet<Stage> = new Set(['applied', 'awaiting', ...CLOSED_STAGES])
 
 export const REMINDER_PRESETS = [3, 5, 7, 15] as const
 

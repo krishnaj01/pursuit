@@ -45,7 +45,7 @@ Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps
 |---|---|
 | 🗂️ **One pipeline** | Every application in a single table, sorted by the next reminder. Filter by due, upcoming or closed, search, and page through 10 / 20 / 50 rows. Phones and tablets get a card layout. |
 | 🔔 **Timely nudges** | A daily in-app digest lists everything due — worked out in *your* timezone. After checking in, schedule the next nudge in 3, 5, 7 or 15 days, pick a date, or turn it off. |
-| 🧭 **Stages that move your reminders** | OA cleared, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. Offers and rejections close an application. |
+| 🧭 **Stages that move your reminders** | OA cleared, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. **Awaiting** marks that you're waiting to hear back and asks when to follow up. Offers and rejections close an application. |
 | 🕰️ **Editable timeline** | Every stage change is recorded. Fix a date, rename a custom stage, or remove an entry logged by mistake — the application stays in sync. |
 | 📝 **Notes at a glance** | A small note icon marks applications with notes; hover or tap to read them, with clickable links and one-click copy. |
 | 🏢 **Company logos** | Fetched once per company from logo.dev (falling back to Google favicons), stored as tiny 128 px WebP images and served from memory. Keep it, replace it with your own URL, or remove it. |
@@ -182,6 +182,7 @@ Open <http://localhost:5173>. In development, Vite proxies `/api` to the backend
 |---|---|
 | You add an application | today + the days you chose, a custom date, or none |
 | It moves to a dated stage (OA, assignment, hackathon, rounds, interview, custom) | that event's date — unless you switch the reminder off |
+| It moves to **Awaiting** (waiting to hear back) | the follow-up you pick: 3 / 5 / 7 / 15 days, a date, or none |
 | It moves back to Applied | unchanged |
 | It becomes an Offer or is Rejected | none — the application is closed |
 | You click **Set next** / **Reschedule** | 3 / 5 / 7 / 15 days from today, a date you pick, or none |

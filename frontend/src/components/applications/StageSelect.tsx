@@ -7,15 +7,16 @@ import { useUpdateStage } from '@/api/applications'
 import { StagePill } from '@/components/ui/StagePill'
 import { errorMessage } from '@/lib/api'
 import { STAGE_ORDER, STAGES, UNDATED_STAGES } from '@/lib/constants'
-import type { Application, Stage } from '@/types'
+import type { Application, Stage, StageUpdate } from '@/types'
 
+import { FollowUpDialog } from './FollowUpDialog'
 import { StageDateDialog } from './StageDateDialog'
 
 export function StageSelect({ application }: { application: Application }) {
   const updateStage = useUpdateStage()
   const [pendingStage, setPendingStage] = useState<Stage | null>(null)
 
-  const commit = (stage: Stage, extra: { event_date?: string; custom_stage_label?: string; remind?: boolean } = {}) =>
+  const commit = (stage: Stage, extra: Omit<StageUpdate, 'stage'> = {}) =>
     updateStage.mutateAsync({ id: application.id, stage, ...extra }).then(
       (updated) => {
         toast.success(`${updated.company_name} moved to ${STAGES[stage].label.replace('…', '')}`)
@@ -26,8 +27,9 @@ export function StageSelect({ application }: { application: Application }) {
 
   const onValueChange = (value: string) => {
     const stage = value as Stage
-    if (UNDATED_STAGES.has(stage)) void commit(stage)
-    else setPendingStage(stage)
+    // Awaiting asks when to follow up; other undated stages save straight away.
+    if (stage === 'awaiting' || !UNDATED_STAGES.has(stage)) setPendingStage(stage)
+    else void commit(stage)
   }
 
   return (
@@ -66,7 +68,16 @@ export function StageSelect({ application }: { application: Application }) {
         </Select.Portal>
       </Select.Root>
 
-      {pendingStage && (
+      {pendingStage === 'awaiting' && (
+        <FollowUpDialog
+          companyName={application.company_name}
+          pending={updateStage.isPending}
+          onCancel={() => setPendingStage(null)}
+          onConfirm={(followUp) => commit('awaiting', followUp)}
+        />
+      )}
+
+      {pendingStage && pendingStage !== 'awaiting' && (
         <StageDateDialog
           stage={pendingStage}
           companyName={application.company_name}

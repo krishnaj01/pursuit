@@ -1,5 +1,6 @@
 export type Stage =
   | 'applied'
+  | 'awaiting'
   | 'oa_cleared'
   | 'assignment'
   | 'hackathon'
@@ -60,6 +61,9 @@ export interface StageUpdate {
   event_date?: string | null
   /** false records the event date without a reminder. */
   remind?: boolean
+  /** Applied/Awaiting only: schedule the next follow-up in the same request. */
+  follow_up_days?: number
+  follow_up_on?: string
 }
 
 export type ReminderUpdate = { days: number } | { on_date: string }

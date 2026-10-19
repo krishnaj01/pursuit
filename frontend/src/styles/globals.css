@@ -51,6 +51,7 @@
 
   /* Application stages */
   --stage-applied: #6b7280;
+  --stage-awaiting: #9a7b00;
   --stage-oa: #0e8f8f;
   --stage-assignment: #b8630b;
   --stage-hackathon: #c2410c;
@@ -113,6 +114,7 @@
   --danger-soft: #3a1717;
 
   --stage-applied: #a1a1aa;
+  --stage-awaiting: #f2c94c;
   --stage-oa: #2dd4bf;
   --stage-assignment: #f0a440;
   --stage-hackathon: #fb923c;
