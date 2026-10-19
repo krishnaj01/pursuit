@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router'
 import { toast } from 'sonner'
 
 import { useGoogleSignIn } from '@/api/auth'
+import { ExtensionPromo } from '@/components/auth/ExtensionPromo'
 import { PrivacyNote } from '@/components/auth/PrivacyNote'
 import { ProductShowcase } from '@/components/auth/ProductShowcase'
 import { SiteFooter } from '@/components/layout/SiteFooter'
@@ -86,6 +87,8 @@ export function LoginPage() {
         </div>
 
         <ProductShowcase />
+
+        <ExtensionPromo />
 
         <PrivacyNote />
       </main>

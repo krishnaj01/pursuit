@@ -10,6 +10,8 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { errorMessage } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
 
+import { GetExtensionButtons } from './GetExtensionButtons'
+
 export function ExtensionCard() {
   const { data: tokens, isLoading } = useExtensionTokens()
   const revoke = useRevokeExtensionToken()
@@ -33,6 +35,13 @@ export function ExtensionCard() {
               <Puzzle /> Connect extension
             </Link>
           </Button>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface-raised px-4 py-3">
+          <p className="text-sm text-muted">
+            Don't have it yet? Works in Chrome, Edge, Brave and Arc.
+          </p>
+          <GetExtensionButtons size="sm" />
         </div>
 
         {isLoading ? (

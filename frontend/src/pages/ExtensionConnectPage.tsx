@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
 import { useCreateExtensionToken, useRevokeExtensionToken } from '@/api/extension'
+import { GetExtensionButtons } from '@/components/extension/GetExtensionButtons'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -73,6 +74,7 @@ export function ExtensionConnectPage() {
                   <p className="text-sm text-muted">Install the Pursuit extension, then come back to this page.</p>
                 </div>
               </div>
+              <GetExtensionButtons />
               <Button variant="secondary" onClick={check}>
                 I've installed it — check again
               </Button>
