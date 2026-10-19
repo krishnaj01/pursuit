@@ -9,7 +9,7 @@ Track job applications, move them through stages, and get in-app reminders to fo
 - **Reminders.** One in-app digest per day lists every application due, based on each user's own timezone. After a reminder, you can schedule the next check-in. Offers and rejections count as closed: they get no more reminders and move to the Closed tab.
 - **Profile.** Totals, response and offer rates, applications per week, stage breakdown and upcoming events.
 - **Your data.** Export every application (with its timeline) as CSV, or permanently delete the account and everything in it, from the Profile page. The login page explains what's stored and why.
-- **Company logos.** Each logo is fetched once per domain from logo.dev (falling back to Google favicons) and stored in Postgres. The app serves logos from its own endpoint. You can keep the fetched logo, replace it with an image URL, or remove it.
+- **Company logos.** Each logo is fetched once per domain from logo.dev (falling back to Google favicons) and stored in Postgres as small 128 px WebP images. The app serves logos from its own endpoint. You can keep the fetched logo, replace it with an image URL, or remove it.
 
 ## Stack
 

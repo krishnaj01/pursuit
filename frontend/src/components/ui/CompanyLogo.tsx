@@ -16,31 +16,44 @@ const sizes = {
   lg: 'size-14 rounded-xl text-sm',
 }
 
-/** Logo with graceful degradation to an initials monogram. */
+/** Logo with an initials monogram underneath: shown while the image loads (then the
+ *  image fades in over it) and kept if the image fails or there is none. */
 export function CompanyLogo({ name, src, size = 'md', className }: CompanyLogoProps) {
   const resolved = assetUrl(src)
   const [failedSrc, setFailedSrc] = useState<string>()
+  const [loadedSrc, setLoadedSrc] = useState<string>()
   const current = resolved && resolved !== failedSrc ? resolved : undefined
+  const loaded = !!current && loadedSrc === current
 
   return (
     <div
       className={cn(
-        'grid shrink-0 place-items-center overflow-hidden border border-border bg-surface-raised font-display font-semibold text-muted',
+        'relative grid shrink-0 place-items-center overflow-hidden border border-border bg-surface-raised font-display font-semibold text-muted',
         sizes[size],
         className,
       )}
     >
-      {current ? (
+      <span aria-hidden className={cn('transition-opacity duration-300', loaded && 'opacity-0')}>
+        {initials(name) || '?'}
+      </span>
+      {current && (
         <img
           key={current}
+          // Cached images can finish before React attaches onLoad; check on mount too.
+          ref={(img) => {
+            if (img?.complete && img.naturalWidth > 0) setLoadedSrc(current)
+          }}
           src={current}
           alt={`${name} logo`}
           loading="lazy"
-          className="size-full bg-white object-contain p-1"
+          decoding="async"
+          className={cn(
+            'absolute inset-0 size-full bg-white object-contain p-1 opacity-0 transition-opacity duration-300 ease-out',
+            loaded && 'opacity-100',
+          )}
+          onLoad={() => setLoadedSrc(current)}
           onError={() => setFailedSrc(current)}
         />
-      ) : (
-        <span aria-hidden>{initials(name) || '?'}</span>
       )}
     </div>
   )
