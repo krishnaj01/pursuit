@@ -80,6 +80,24 @@ async def test_list_is_ordered_by_upcoming_reminder(client):
     assert names == ["Soon", "Middle", "Later"]
 
 
+async def test_first_reminder_counts_from_date_added_not_applied_date(client):
+    today = today_in("UTC")
+    long_ago = today - timedelta(days=30)
+    payload = {"company_name": "Old", "role": "SWE", "applied_on": long_ago.isoformat()}
+
+    by_days = await client.post("/api/v1/applications", json=payload | {"reminder_days": 5})
+    assert by_days.json()["next_reminder_on"] == (today + timedelta(days=5)).isoformat()
+
+    custom_day = today + timedelta(days=12)
+    custom = await client.post(
+        "/api/v1/applications", json=payload | {"reminder_on": custom_day.isoformat()}
+    )
+    assert custom.json()["next_reminder_on"] == custom_day.isoformat()
+
+    neither = await client.post("/api/v1/applications", json=payload)
+    assert neither.status_code == 422
+
+
 async def test_requires_auth(client):
     client.cookies.clear()
     assert (await client.get("/api/v1/applications")).status_code == 401

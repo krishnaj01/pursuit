@@ -34,10 +34,19 @@ class ApplicationCreate(BaseModel):
     logo_url: str | None = None
     role: Role
     applied_on: date
-    reminder_days: int = Field(ge=0, le=365)
+    # First status-check reminder, counted from the day it's added to the app
+    # (`reminder_days`) or an exact custom date (`reminder_on`).
+    reminder_days: int | None = Field(default=None, ge=0, le=365)
+    reminder_on: date | None = None
     notes: str | None = Field(default=None, max_length=5000)
 
     _validate_logo = field_validator("logo_url")(classmethod(lambda cls, v: _clean_url(v)))
+
+    @model_validator(mode="after")
+    def one_reminder_choice(self) -> Self:
+        if (self.reminder_days is None) == (self.reminder_on is None):
+            raise ValueError("Provide exactly one of `reminder_days` or `reminder_on`")
+        return self
 
 
 class ApplicationUpdate(BaseModel):

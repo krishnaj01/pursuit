@@ -1,6 +1,6 @@
 """Reminder scheduling rules.
 
-- New application: remind `reminder_days` after the application date to check its status.
+- New application: remind `reminder_days` after it was added to the app (or on a custom date).
 - Moving to a dated stage (OA, interview, assignment...): remind on that event's date.
 - Rejected: no further reminders.
 - After a reminder fires, the user schedules the next status check (unless rejected).
@@ -30,8 +30,15 @@ def today_in(tz_name: str) -> date:
     return datetime.now(safe_zone(tz_name)).date()
 
 
-def initial_reminder(applied_on: date, reminder_days: int) -> date:
-    return applied_on + timedelta(days=reminder_days)
+def initial_reminder(
+    today: date, reminder_days: int | None = None, reminder_on: date | None = None
+) -> date:
+    """First reminder, counted from the day the application is added (not the applied date)."""
+    if reminder_on is not None:
+        if reminder_on < today:
+            raise ReminderError("The first reminder can't be in the past")
+        return reminder_on
+    return today + timedelta(days=reminder_days or 0)
 
 
 def apply_stage_change(app: Application, update: StageUpdate, today: date) -> StageEvent:

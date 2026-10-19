@@ -61,12 +61,19 @@ async def list_applications(
 
 @router.post("", response_model=ApplicationOut, status_code=status.HTTP_201_CREATED)
 async def create_application(payload: ApplicationCreate, db: DbSession, user: CurrentUser):
-    data = payload.model_dump(exclude={"reminder_days"})
+    today = reminders.today_in(user.timezone)
+    try:
+        first_reminder = reminders.initial_reminder(
+            today, payload.reminder_days, payload.reminder_on
+        )
+    except reminders.ReminderError as exc:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+    data = payload.model_dump(exclude={"reminder_days", "reminder_on"})
     app = Application(
         **data,
         user_id=user.id,
         stage=Stage.APPLIED,
-        next_reminder_on=reminders.initial_reminder(payload.applied_on, payload.reminder_days),
+        next_reminder_on=first_reminder,
         stage_events=[StageEvent(from_stage=None, to_stage=Stage.APPLIED)],
     )
     db.add(app)

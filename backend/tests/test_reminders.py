@@ -23,8 +23,11 @@ def make_app(**kwargs) -> Application:
     return Application(**(defaults | kwargs))
 
 
-def test_initial_reminder_adds_days():
-    assert reminders.initial_reminder(TODAY, 5) == date(2026, 10, 24)
+def test_initial_reminder_counts_from_today_or_uses_custom_date():
+    assert reminders.initial_reminder(TODAY, reminder_days=5) == date(2026, 10, 24)
+    assert reminders.initial_reminder(TODAY, reminder_on=date(2026, 11, 2)) == date(2026, 11, 2)
+    with pytest.raises(reminders.ReminderError):
+        reminders.initial_reminder(TODAY, reminder_on=TODAY - timedelta(days=1))
 
 
 def test_dated_stage_moves_reminder_to_event():
