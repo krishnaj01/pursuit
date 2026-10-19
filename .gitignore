@@ -1,0 +1,23 @@
+# Env
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+*.log
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+.claude/settings.local.json
