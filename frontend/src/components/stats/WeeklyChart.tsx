@@ -19,12 +19,12 @@ export function WeeklyChart({ weekly }: { weekly: Stats['weekly'] }) {
           <h3 className="text-lg font-semibold">Applications per week</h3>
           <p className="text-sm text-muted">Last 12 weeks, by date applied</p>
         </div>
-        <div className="flex rounded-md bg-surface-sunken p-0.5 text-xs">
+        <div className="flex rounded-[calc(var(--radius-sm)+0.125rem)] bg-surface-sunken p-0.5 text-xs">
           {(['chart', 'table'] as const).map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={cn('rounded px-2.5 py-1 capitalize transition-colors', view === v ? 'bg-surface text-fg shadow-sm' : 'text-muted')}
+              className={cn('rounded-sm px-2.5 py-1 capitalize transition-colors', view === v ? 'bg-surface text-fg shadow-sm' : 'text-muted')}
             >
               {v}
             </button>
