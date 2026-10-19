@@ -13,7 +13,7 @@ interface StageMeta {
 export const STAGES: Record<Stage, StageMeta> = {
   applied: { label: 'Applied', color: 'var(--stage-applied)' },
   awaiting: { label: 'Awaiting', color: 'var(--stage-awaiting)' },
-  oa_cleared: { label: 'OA cleared', color: 'var(--stage-oa)', datePrompt: 'When is the next step after the OA?' },
+  oa_cleared: { label: 'OA', color: 'var(--stage-oa)', datePrompt: 'When is the OA?' },
   assignment: { label: 'Assignment', color: 'var(--stage-assignment)', datePrompt: 'When is the assignment due?' },
   hackathon: { label: 'Hackathon', color: 'var(--stage-hackathon)', datePrompt: 'When is the hackathon?' },
   round_1: { label: 'Round 1', color: 'var(--stage-round-1)', datePrompt: 'When is round 1?' },

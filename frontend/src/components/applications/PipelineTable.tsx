@@ -31,10 +31,19 @@ const isDue = (a: Application) => !isClosed(a.stage) && !!a.next_reminder_on && 
 /** Fixed widths for content-sized columns; company and role share the remaining space.
  *  The actions column narrows on smaller screens, where the reminder button goes icon-only. */
 const COLUMN_WIDTHS: Record<string, string> = {
+  // Role is capped so freed space goes to Company, which carries the logo and icons.
+  role: 'w-[19%]',
   applied_on: 'w-[7.5rem]',
-  stage: 'w-[10rem]',
-  reminder: 'w-[13rem]',
+  // Fits the widest standard stage pill ("Assignment") without truncating.
+  stage: 'w-[9.5rem]',
+  reminder: 'w-[12.5rem]',
   actions: 'w-[7.5rem] min-[1380px]:w-[12.5rem]',
+}
+
+/** Per-column cell padding overrides (header and body). */
+const COLUMN_PADDING: Record<string, string> = {
+  // Tighter gap after the stage pill.
+  reminder: 'pl-2',
 }
 
 const rowTone = (a: Application, highlighted: Set<string>) =>
@@ -172,7 +181,10 @@ export function PipelineTable({ data, search, highlightedIds }: PipelineTablePro
                 {group.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="sticky top-0 border-b border-border bg-surface-raised px-4 py-3 font-mono text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-subtle uppercase first:pl-6 last:pr-6"
+                    className={cn(
+                      'sticky top-0 border-b border-border bg-surface-raised px-4 py-3 font-mono text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-subtle uppercase first:pl-6 last:pr-6',
+                      COLUMN_PADDING[header.column.id],
+                    )}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
@@ -184,7 +196,13 @@ export function PipelineTable({ data, search, highlightedIds }: PipelineTablePro
             {rows.map((row) => (
               <tr key={row.id} className={cn('group hover:bg-surface-raised', rowTone(row.original, highlighted))}>
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="h-[4.25rem] border-b border-border px-4 py-3 align-middle first:pl-6 last:pr-6 group-last:border-b-0">
+                  <td
+                    key={cell.id}
+                    className={cn(
+                      'h-[4.25rem] border-b border-border px-4 py-3 align-middle first:pl-6 last:pr-6 group-last:border-b-0',
+                      COLUMN_PADDING[cell.column.id],
+                    )}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

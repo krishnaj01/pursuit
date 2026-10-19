@@ -45,7 +45,7 @@ Job hunting turns into a spreadsheet of forgotten follow-ups fast. Pursuit keeps
 |---|---|
 | 🗂️ **One pipeline** | Every application in a single table, sorted by the next reminder. Filter by due, upcoming or closed, search, and page through 10 / 20 / 50 rows. Phones and tablets get a card layout. |
 | 🔔 **Timely nudges** | A daily in-app digest lists everything due — worked out in *your* timezone. After checking in, schedule the next nudge in 3, 5, 7 or 15 days, pick a date, or turn it off. |
-| 🧭 **Stages that move your reminders** | OA cleared, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. **Awaiting** marks that you're waiting to hear back and asks when to follow up. Offers and rejections close an application. |
+| 🧭 **Stages that move your reminders** | OA, assignment, hackathon, rounds, interview or your own custom stage. Dated stages ask for the date and move your reminder to it. **Awaiting** marks that you're waiting to hear back and asks when to follow up. Offers and rejections close an application. |
 | 🕰️ **Editable timeline** | Every stage change is recorded. Fix a date, rename a custom stage, or remove an entry logged by mistake — the application stays in sync. |
 | 📝 **Notes & job links at a glance** | Save the job posting's link and your notes with each application. Small icons mark them in the pipeline — hover or tap to read notes or open the posting, with one-click copy. |
 | 🏢 **Company logos** | Fetched once per company from logo.dev (falling back to Google favicons), stored as tiny 128 px WebP images and served from memory. Keep it, replace it with your own URL, or remove it. |
