@@ -36,6 +36,7 @@ export interface Application {
   event_date: string | null
   next_reminder_on: string | null
   reminder_kind: ReminderKind
+  job_url: string | null
   notes: string | null
   created_at: string
   updated_at: string
@@ -50,6 +51,7 @@ export interface ApplicationCreate {
   /** First reminder: days from today (date added) or an exact custom date. Omit both for none. */
   reminder_days?: number
   reminder_on?: string
+  job_url?: string | null
   notes?: string | null
 }
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 
 import { useApplications } from '@/api/applications'
 import { ApplicationForm } from '@/components/applications/ApplicationForm'
+import { JobLinkPreview } from '@/components/applications/JobLinkPreview'
 import { NotePreview } from '@/components/applications/NotePreview'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -56,6 +57,7 @@ export function NewApplicationPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex min-w-0 items-center gap-1">
                     <p className="truncate text-sm font-medium">{app.company_name}</p>
+                    <JobLinkPreview companyName={app.company_name} url={app.job_url} />
                     <NotePreview companyName={app.company_name} notes={app.notes} />
                   </div>
                   <p className="truncate text-xs text-muted">{app.role}</p>

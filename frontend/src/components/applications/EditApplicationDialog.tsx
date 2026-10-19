@@ -9,6 +9,7 @@ import { Field } from '@/components/ui/Field'
 import { Input, Textarea } from '@/components/ui/Input'
 import { errorMessage } from '@/lib/api'
 import { type LogoValue, pickLogoUrl } from '@/lib/logos'
+import { isHttpUrl } from '@/lib/utils'
 import type { Application, ApplicationUpdate } from '@/types'
 
 import { LogoPicker } from './LogoPicker'
@@ -26,6 +27,7 @@ const formFrom = (app: Application) => ({
   company_name: app.company_name,
   company_domain: app.company_domain ?? '',
   role: app.role,
+  job_url: app.job_url ?? '',
   notes: app.notes ?? '',
 })
 
@@ -45,6 +47,9 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
   const [logo, setLogo] = useState<LogoValue>(initialLogoValue)
   const lookup = useCompanyLogo(form.company_name, form.company_domain)
 
+  const jobUrlError =
+    form.job_url.trim() && !isHttpUrl(form.job_url.trim()) ? 'Paste the full link, starting with https://' : undefined
+
   const set = (key: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }))
 
@@ -53,6 +58,7 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
     if (form.company_name !== initial.company_name) changes.company_name = form.company_name.trim()
     if (form.company_domain !== initial.company_domain) changes.company_domain = form.company_domain.trim() || null
     if (form.role !== initial.role) changes.role = form.role.trim()
+    if (form.job_url !== initial.job_url) changes.job_url = form.job_url.trim() || null
     if (form.notes !== initial.notes) changes.notes = form.notes.trim() || null
     const logoUrl = pickLogoUrl(logo, lookup.data?.logo_url ?? application.logo_url)
     if (logo !== initialLogoValue || logoUrl !== application.logo_url) changes.logo_url = logoUrl
@@ -80,6 +86,17 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
           <Field label="Role" htmlFor="edit-role" className="sm:col-span-2">
             <Input id="edit-role" value={form.role} onChange={set('role')} />
           </Field>
+          <Field label="Job posting" htmlFor="edit-job-url" error={jobUrlError} className="sm:col-span-2">
+            <Input
+              id="edit-job-url"
+              type="url"
+              inputMode="url"
+              placeholder="https://company.com/careers/role"
+              value={form.job_url}
+              onChange={set('job_url')}
+              aria-invalid={!!jobUrlError}
+            />
+          </Field>
         </div>
         <LogoPicker
           company={form.company_name}
@@ -99,7 +116,7 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
         <Button variant="ghost" onClick={() => onOpenChange(false)}>
           Cancel
         </Button>
-        <Button onClick={save} loading={update.isPending} disabled={!form.company_name.trim() || !form.role.trim()}>
+        <Button onClick={save} loading={update.isPending} disabled={!form.company_name.trim() || !form.role.trim() || !!jobUrlError}>
           Save changes
         </Button>
       </div>

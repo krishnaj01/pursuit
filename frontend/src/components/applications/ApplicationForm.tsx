@@ -14,7 +14,7 @@ import { Input, Textarea } from '@/components/ui/Input'
 import { errorMessage } from '@/lib/api'
 import { type LogoValue, pickLogoUrl } from '@/lib/logos'
 import { type ReminderChoice, reminderPayload } from '@/lib/reminders'
-import { todayISO } from '@/lib/utils'
+import { isHttpUrl, todayISO } from '@/lib/utils'
 
 import { LogoPicker } from './LogoPicker'
 import { ReminderPicker } from './ReminderPicker'
@@ -31,6 +31,10 @@ const schema = z.object({
   role: z.string().trim().min(1, 'Role is required').max(200),
   applied_on: z.iso.date('Pick a date').refine((v) => v <= todayISO(), "Can't be in the future"),
   reminder: z.custom<ReminderChoice>(),
+  job_url: z
+    .string()
+    .trim()
+    .refine((v) => v === '' || isHttpUrl(v), 'Paste the full link, starting with https://'),
   notes: z.string().max(5000),
 })
 
@@ -43,6 +47,7 @@ const DEFAULT_VALUES: FormInput = {
   role: '',
   applied_on: todayISO(),
   reminder: { mode: 'days', days: 7 },
+  job_url: '',
   notes: '',
 }
 
@@ -64,12 +69,13 @@ export function ApplicationForm() {
   const [company, domain, reminder] = useWatch({ control, name: ['company_name', 'company_domain', 'reminder'] })
   const lookup = useCompanyLogo(company ?? '', DOMAIN_PATTERN.test(domain ?? '') ? (domain ?? '') : '')
 
-  const onSubmit = handleSubmit(async ({ reminder, company_domain, notes, ...values }) => {
+  const onSubmit = handleSubmit(async ({ reminder, company_domain, job_url, notes, ...values }) => {
     try {
       const created = await create.mutateAsync({
         ...values,
         company_domain: company_domain || lookup.data?.domain || null,
         logo_url: pickLogoUrl(logo, lookup.data?.logo_url ?? null),
+        job_url: job_url || null,
         notes: notes.trim() || null,
         ...reminderPayload(reminder),
       })
@@ -109,6 +115,23 @@ export function ApplicationForm() {
             )}
           />
         </Field>
+        <Field
+          label="Job posting"
+          htmlFor="job_url"
+          error={errors.job_url?.message}
+          hint="Optional — the link to the listing, so you can find it again."
+          className="sm:col-span-2"
+        >
+          <Input
+            id="job_url"
+            type="url"
+            inputMode="url"
+            placeholder="https://company.com/careers/role"
+            autoComplete="off"
+            aria-invalid={!!errors.job_url}
+            {...register('job_url')}
+          />
+        </Field>
       </div>
 
       <LogoPicker
@@ -129,7 +152,7 @@ export function ApplicationForm() {
         />
       </Field>
 
-      <Field label="Notes" htmlFor="notes" hint="Referral, job link, recruiter name…">
+      <Field label="Notes" htmlFor="notes" hint="Who referred you, recruiter contacts, what to prepare…">
         <Textarea id="notes" placeholder="Anything worth remembering" {...register('notes')} />
       </Field>
 

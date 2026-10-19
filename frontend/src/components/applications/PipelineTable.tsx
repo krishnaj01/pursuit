@@ -19,6 +19,7 @@ import { cn, daysFromToday, formatDate } from '@/lib/utils'
 import { type PageSize, useUiStore } from '@/stores/uiStore'
 import type { Application } from '@/types'
 
+import { JobLinkPreview } from './JobLinkPreview'
 import { NotePreview } from './NotePreview'
 import { ReminderCell } from './ReminderCell'
 import { ReminderMenu } from './ReminderMenu'
@@ -51,6 +52,7 @@ function CompanyCell({ application: a }: { application: Application }) {
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-1">
           <TruncatedText as="p" className="font-medium">{a.company_name}</TruncatedText>
+          <JobLinkPreview companyName={a.company_name} url={a.job_url} />
           <NotePreview companyName={a.company_name} notes={a.notes} />
         </div>
         {a.company_domain && <TruncatedText as="p" className="font-mono text-[11px] text-subtle">{a.company_domain}</TruncatedText>}

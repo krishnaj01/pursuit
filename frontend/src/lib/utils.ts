@@ -32,3 +32,13 @@ export const initials = (name: string) =>
     .join('')
 
 export const percent = (ratio: number) => `${Math.round(ratio * 100)}%`
+
+/** True for absolute http(s) URLs — the only kind of job link we accept. */
+export function isHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
