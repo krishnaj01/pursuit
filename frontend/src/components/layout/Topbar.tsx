@@ -9,10 +9,8 @@ export function Topbar() {
       <div className="lg:hidden">
         <Logo />
       </div>
-      <div className="ml-auto flex items-center gap-2.5">
-        <div className="hidden sm:block">
-          <ThemeToggle />
-        </div>
+      <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
+        <ThemeToggle />
         <NotificationBell />
         <UserMenu />
       </div>

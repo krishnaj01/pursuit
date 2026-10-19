@@ -229,6 +229,12 @@
     background: color-mix(in oklab, var(--stage) 12%, transparent);
     border-color: color-mix(in oklab, var(--stage) 28%, transparent);
   }
+  /* Google's sign-in button lives in an iframe. If the page's colour scheme (dark) differs
+     from the iframe's (light), Chrome paints the iframe with an opaque white backdrop —
+     a white box around the button. Matching the schemes keeps it transparent. */
+  .google-signin iframe {
+    color-scheme: light;
+  }
   .stage-dot {
     background: var(--stage);
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--stage) 20%, transparent);

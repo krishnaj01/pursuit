@@ -45,18 +45,20 @@ export function LoginPage() {
             Track every application, never miss an OA or interview, and know exactly when to check back in.
           </p>
           <div className="mt-2 flex min-h-11 flex-col items-center gap-3">
-            <GoogleLogin
-              key={`${preference}-${isDark}`}
-              onSuccess={({ credential }) =>
-                credential &&
-                signIn.mutate(credential, { onError: (e) => toast.error(errorMessage(e, 'Sign-in failed')) })
-              }
-              onError={() => toast.error('Google sign-in was cancelled or failed')}
-              theme={isDark ? 'filled_black' : 'outline'}
-              shape="pill"
-              size="large"
-              text="continue_with"
-            />
+            <div className="google-signin">
+              <GoogleLogin
+                key={`${preference}-${isDark}`}
+                onSuccess={({ credential }) =>
+                  credential &&
+                  signIn.mutate(credential, { onError: (e) => toast.error(errorMessage(e, 'Sign-in failed')) })
+                }
+                onError={() => toast.error('Google sign-in was cancelled or failed')}
+                theme={isDark ? 'filled_black' : 'outline'}
+                shape="pill"
+                size="large"
+                text="continue_with"
+              />
+            </div>
             <p className="text-xs text-subtle">
               We only use your name, email and photo.{' '}
               <a href="#privacy" className="font-medium text-muted underline decoration-border-strong underline-offset-4 transition-colors hover:text-fg">
