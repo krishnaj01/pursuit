@@ -1,56 +1,159 @@
+"""Company logo lookup with a database cache.
+
+Logos are downloaded from logo.dev (falling back to Google's favicon service) once per
+domain and stored in `logo_assets`. Applications reference our own image endpoint, so
+rendering a table never hits the upstream API and its rate limits.
+"""
+
 import logging
-from urllib.parse import quote
+from datetime import UTC, datetime, timedelta
 
 import httpx
 from slugify import slugify
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.models import CompanyDomain, LogoAsset
 from app.schemas.logo import LogoResolution
 
 logger = logging.getLogger(__name__)
 
 LOGO_DEV_SEARCH_URL = "https://api.logo.dev/search"
-LOGO_DEV_IMG_URL = "https://img.logo.dev/{domain}?token={token}&size=128&format=png&retina=true"
-FAVICON_URL = "https://www.google.com/s2/favicons?domain={domain}&sz=128"
+LOGO_DEV_IMG_URL = "https://img.logo.dev/{domain}"
+FAVICON_URL = "https://www.google.com/s2/favicons"
+
+MAX_LOGO_BYTES = 512 * 1024
+FAILED_LOOKUP_RETRY = timedelta(days=7)
+HTTP_TIMEOUT = 5.0
 
 
-async def _search_domain(company: str, secret_key: str) -> str | None:
+def normalize_domain(domain: str) -> str:
+    domain = domain.strip().lower().removeprefix("https://").removeprefix("http://")
+    return domain.split("/")[0].removeprefix("www.")
+
+
+def image_path(domain: str) -> str:
+    return f"{get_settings().api_prefix}/logos/image/{domain}"
+
+
+async def _search_domain(client: httpx.AsyncClient, company: str, secret_key: str) -> str | None:
     try:
-        async with httpx.AsyncClient(timeout=4.0) as client:
-            response = await client.get(
-                LOGO_DEV_SEARCH_URL,
-                params={"q": company},
-                headers={"Authorization": f"Bearer {secret_key}"},
-            )
-            response.raise_for_status()
-            results = response.json()
+        response = await client.get(
+            LOGO_DEV_SEARCH_URL,
+            params={"q": company},
+            headers={"Authorization": f"Bearer {secret_key}"},
+        )
+        response.raise_for_status()
+        results = response.json()
     except (httpx.HTTPError, ValueError):
         logger.warning("logo.dev search failed for %r", company, exc_info=True)
         return None
-    if isinstance(results, list) and results:
-        return results[0].get("domain")
+    if isinstance(results, list) and results and results[0].get("domain"):
+        return normalize_domain(results[0]["domain"])
     return None
 
 
-def _guess_domain(company: str) -> str | None:
-    slug = slugify(company, separator="")
-    return f"{slug}.com" if slug else None
+async def _resolve_domain(
+    session: AsyncSession, client: httpx.AsyncClient, company: str
+) -> str | None:
+    key = slugify(company)
+    if not key:
+        return None
+    cached = await session.get(CompanyDomain, key)
+    if cached:
+        return cached.domain
+
+    secret = get_settings().logo_dev_secret_key
+    domain = await _search_domain(client, company, secret) if secret else None
+    domain = domain or f"{slugify(company, separator='')}.com"
+
+    session.add(CompanyDomain(lookup_key=key, domain=domain))
+    try:
+        await session.commit()
+    except IntegrityError:
+        await session.rollback()
+    return domain
 
 
-async def resolve_logo(company: str | None, domain: str | None) -> LogoResolution:
-    settings = get_settings()
-    if not domain and company:
-        if settings.logo_dev_secret_key:
-            domain = await _search_domain(company, settings.logo_dev_secret_key)
-        domain = domain or _guess_domain(company)
-    if not domain:
-        return LogoResolution(domain=None, logo_url=None, fallback_url=None)
+async def _download(client: httpx.AsyncClient, url: str, params: dict) -> tuple[bytes, str] | None:
+    try:
+        response = await client.get(url, params=params, follow_redirects=True)
+    except httpx.HTTPError:
+        logger.warning("Logo download failed: %s", url, exc_info=True)
+        return None
+    content_type = response.headers.get("content-type", "").split(";")[0]
+    if (
+        response.status_code != 200
+        or not content_type.startswith("image/")
+        or not response.content
+        or len(response.content) > MAX_LOGO_BYTES
+    ):
+        return None
+    return response.content, content_type
 
-    domain = domain.strip().lower()
-    fallback = FAVICON_URL.format(domain=quote(domain))
-    primary = (
-        LOGO_DEV_IMG_URL.format(domain=quote(domain), token=settings.logo_dev_publishable_key)
-        if settings.logo_dev_publishable_key
-        else fallback
-    )
-    return LogoResolution(domain=domain, logo_url=primary, fallback_url=fallback)
+
+async def _fetch_upstream(client: httpx.AsyncClient, domain: str) -> tuple[bytes, str, str] | None:
+    token = get_settings().logo_dev_publishable_key
+    if token:
+        logo = await _download(
+            client,
+            LOGO_DEV_IMG_URL.format(domain=domain),
+            # fallback=404 makes unknown domains fail instead of returning a monogram.
+            {"token": token, "size": 128, "format": "png", "retina": "true", "fallback": "404"},
+        )
+        if logo:
+            return *logo, "logo.dev"
+    favicon = await _download(client, FAVICON_URL, {"domain": domain, "sz": 128})
+    if favicon:
+        return *favicon, "favicon"
+    return None
+
+
+def _aware(moment: datetime) -> datetime:
+    return moment if moment.tzinfo else moment.replace(tzinfo=UTC)
+
+
+async def get_or_fetch_asset(
+    session: AsyncSession, client: httpx.AsyncClient, domain: str
+) -> LogoAsset | None:
+    asset = await session.get(LogoAsset, domain)
+    now = datetime.now(UTC)
+    if asset and (asset.data or now - _aware(asset.fetched_at) < FAILED_LOOKUP_RETRY):
+        return asset if asset.data else None
+
+    fetched = await _fetch_upstream(client, domain)
+    if asset is None:
+        asset = LogoAsset(domain=domain)
+        session.add(asset)
+    asset.data, asset.content_type, asset.source = fetched if fetched else (None, None, None)
+    asset.fetched_at = now
+    try:
+        await session.commit()
+    except IntegrityError:
+        # Another request cached it concurrently.
+        await session.rollback()
+        asset = await session.get(LogoAsset, domain)
+    return asset if asset and asset.data else None
+
+
+async def resolve_logo(
+    session: AsyncSession,
+    company: str | None,
+    domain: str | None,
+    transport: httpx.AsyncBaseTransport | None = None,
+) -> LogoResolution:
+    async with httpx.AsyncClient(timeout=HTTP_TIMEOUT, transport=transport) as client:
+        if domain:
+            domain = normalize_domain(domain)
+        elif company:
+            domain = await _resolve_domain(session, client, company)
+        if not domain:
+            return LogoResolution(domain=None, logo_url=None)
+        asset = await get_or_fetch_asset(session, client, domain)
+    return LogoResolution(domain=domain, logo_url=image_path(domain) if asset else None)
+
+
+async def get_cached_image(session: AsyncSession, domain: str) -> LogoAsset | None:
+    asset = await session.get(LogoAsset, normalize_domain(domain))
+    return asset if asset and asset.data else None
