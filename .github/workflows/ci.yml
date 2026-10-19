@@ -22,7 +22,8 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      # setup-uv only publishes exact version tags (no moving "v10"), so pin the release.
+      - uses: astral-sh/setup-uv@v10.3.0
         with:
           working-directory: backend
           enable-cache: true
