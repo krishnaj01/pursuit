@@ -1,21 +1,24 @@
+import { DatePicker } from '@/components/ui/DatePicker'
 import { Input } from '@/components/ui/Input'
 import { REMINDER_PRESETS } from '@/lib/constants'
 import { type ReminderChoice, reminderDate } from '@/lib/reminders'
-import { cn, formatDate, todayISO } from '@/lib/utils'
+import { formatDate, todayISO } from '@/lib/utils'
 
 interface ReminderPickerProps {
   value: ReminderChoice
   onChange: (value: ReminderChoice) => void
   /** Allow "Today" (0 days) — useful for the very first reminder. */
   allowToday?: boolean
+  /** Offer a "No reminder" choice. */
+  allowNone?: boolean
   id?: string
 }
 
 const presetClasses =
   'h-9 rounded-md border px-3 text-[13px] font-medium transition-all duration-200 data-[active=true]:border-accent data-[active=true]:bg-accent-soft data-[active=true]:text-accent border-border bg-surface text-muted hover:border-border-strong hover:text-fg'
 
-/** Preset day offsets (3/5/7/15) plus a custom number of days or an exact date. */
-export function ReminderPicker({ value, onChange, allowToday, id }: ReminderPickerProps) {
+/** Preset day offsets (3/5/7/15), a custom number of days, an exact date, or no reminder. */
+export function ReminderPicker({ value, onChange, allowToday, allowNone, id }: ReminderPickerProps) {
   const presets = allowToday ? [0, ...REMINDER_PRESETS] : [...REMINDER_PRESETS]
   const isPreset = value.mode === 'days' && presets.includes(value.days)
   const isCustomDays = value.mode === 'days' && !isPreset
@@ -46,10 +49,15 @@ export function ReminderPicker({ value, onChange, allowToday, id }: ReminderPick
           type="button"
           data-active={value.mode === 'date'}
           className={presetClasses}
-          onClick={() => onChange({ mode: 'date', date: value.mode === 'date' ? value.date : reminderDate(value) })}
+          onClick={() => onChange({ mode: 'date', date: value.mode === 'date' ? value.date : (reminderDate(value) ?? todayISO()) })}
         >
           Pick a date
         </button>
+        {allowNone && (
+          <button type="button" data-active={value.mode === 'none'} className={presetClasses} onClick={() => onChange({ mode: 'none' })}>
+            No reminder
+          </button>
+        )}
       </div>
 
       {isCustomDays && (
@@ -68,20 +76,23 @@ export function ReminderPicker({ value, onChange, allowToday, id }: ReminderPick
         </div>
       )}
       {value.mode === 'date' && (
-        <Input
-          type="date"
+        <DatePicker
           min={todayISO()}
           value={value.date}
-          onChange={(e) => e.target.value && onChange({ mode: 'date', date: e.target.value })}
-          className="w-48 font-mono animate-fade-in"
+          onChange={(date) => onChange({ mode: 'date', date })}
+          className="w-60 animate-fade-in"
           aria-label="Reminder date"
         />
       )}
 
-      <p className="text-xs text-muted">
-        Next check-in:{' '}
-        <span className={cn('font-mono font-medium text-fg')}>{formatDate(reminderDate(value), 'EEE, d MMM yyyy')}</span>
-      </p>
+      {value.mode === 'none' ? (
+        <p className="text-xs text-muted">No reminder — you can add one any time from the pipeline.</p>
+      ) : (
+        <p className="text-xs text-muted">
+          Next check-in:{' '}
+          <span className="font-mono font-medium text-fg">{formatDate(reminderDate(value)!, 'EEE, d MMM yyyy')}</span>
+        </p>
+      )}
     </div>
   )
 }

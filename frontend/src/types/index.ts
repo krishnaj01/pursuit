@@ -46,7 +46,7 @@ export interface ApplicationCreate {
   logo_url?: string | null
   role: string
   applied_on: string
-  /** First reminder: days from today (date added) or an exact custom date. */
+  /** First reminder: days from today (date added) or an exact custom date. Omit both for none. */
   reminder_days?: number
   reminder_on?: string
   notes?: string | null
@@ -58,6 +58,8 @@ export interface StageUpdate {
   stage: Stage
   custom_stage_label?: string | null
   event_date?: string | null
+  /** false records the event date without a reminder. */
+  remind?: boolean
 }
 
 export type ReminderUpdate = { days: number } | { on_date: string }
@@ -68,7 +70,14 @@ export interface StageEvent {
   to_stage: Stage
   custom_stage_label: string | null
   event_date: string | null
+  occurred_on: string
   created_at: string
+}
+
+export interface StageEventUpdate {
+  occurred_on?: string
+  event_date?: string
+  custom_stage_label?: string
 }
 
 export interface AppNotification {

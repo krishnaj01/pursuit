@@ -3,8 +3,9 @@
 Track job applications, move them through stages, and get in-app reminders to follow up.
 
 - **Google sign-in.** Google Identity Services issues an ID token, the backend verifies it and sets an httpOnly JWT cookie.
-- **Log application.** Add the company, role, date applied and the first reminder. The reminder counts from the day you add the application (3 / 5 / 7 / 15 days, a custom number of days, or an exact date).
-- **Pipeline.** A table sorted by the next reminder. Change the stage inline. Every stage except Applied and Rejected asks for a date (OA, interview, deadline…) and moves the reminder to that date.
+- **Log application.** Add the company, role, date applied and the first reminder. The reminder counts from the day you add the application (3 / 5 / 7 / 15 days, a custom number of days, an exact date, or no reminder).
+- **Pipeline.** A table sorted by the next reminder. Change the stage inline. Every stage except Applied and Rejected asks for a date (OA, interview, deadline…) and moves the reminder to that date, unless you switch the reminder off.
+- **Editable timeline.** Each application's stage history can be corrected: change when something happened, the event date or a custom stage's name, or delete an entry logged by mistake. The latest entry is always the current stage.
 - **Reminders.** One in-app digest per day lists every application due, based on each user's own timezone. After a reminder, you can schedule the next check-in. Rejected applications get no more reminders.
 - **Profile.** Totals, response and offer rates, applications per week, stage breakdown and upcoming events.
 - **Company logos.** Each logo is fetched once per domain from logo.dev (falling back to Google favicons) and stored in Postgres. The app serves logos from its own endpoint. You can keep the fetched logo, replace it with an image URL, or remove it.
@@ -89,10 +90,12 @@ cd frontend && npm run lint && npm run build
 
 | Event | Next reminder |
 |---|---|
-| Application added | today + chosen days, or a custom date |
-| Stage → OA cleared / assignment / hackathon / round 1 / round 2 / interview / offer / custom | the event date you enter |
-| Stage → Applied | unchanged (7 days from today if it had none) |
+| Application added | today + chosen days, a custom date, or none |
+| Stage → OA cleared / assignment / hackathon / round 1 / round 2 / interview / offer / custom | the event date you enter (or none, if you switch the reminder off) |
+| Stage → Applied | unchanged |
 | Stage → Rejected | none |
-| "Set next" / "Snooze" | today + 3 / 5 / 7 / 15 days, or a custom date |
+| "Set next" / "Reschedule" | today + 3 / 5 / 7 / 15 days, a custom date, or no reminder |
+| Latest timeline entry's event date edited | moves with it (if you're being reminded about that event) |
+| Latest timeline entry deleted | the stage reverts to the previous entry: its event date if still upcoming, otherwise a status check in 7 days |
 
 "Today" is worked out in each user's timezone, which the browser reports at sign-in. A background job runs hourly to create digests, and they're also created the first time notifications are fetched each day, so they appear even if the server was down.

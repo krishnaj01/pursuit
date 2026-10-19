@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useApplicationHistory, useUpdateApplication } from '@/api/applications'
+import { useUpdateApplication } from '@/api/applications'
 import { useCompanyLogo } from '@/api/logos'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { Field } from '@/components/ui/Field'
 import { Input, Textarea } from '@/components/ui/Input'
-import { stageLabel } from '@/lib/stages'
 import { errorMessage } from '@/lib/api'
 import { type LogoValue, pickLogoUrl } from '@/lib/logos'
-import { formatDate, todayISO } from '@/lib/utils'
-import type { Application } from '@/types'
+import type { Application, ApplicationUpdate } from '@/types'
 
 import { LogoPicker } from './LogoPicker'
+import { TimelineEditor } from './TimelineEditor'
 
 const CACHED_LOGO_PREFIX = '/api/v1/logos/'
 
@@ -23,6 +22,13 @@ function initialLogo(app: Application): LogoValue {
   return { mode: 'custom', customUrl: app.logo_url }
 }
 
+const formFrom = (app: Application) => ({
+  company_name: app.company_name,
+  company_domain: app.company_domain ?? '',
+  role: app.role,
+  notes: app.notes ?? '',
+})
+
 interface EditApplicationDialogProps {
   application: Application
   open: boolean
@@ -31,31 +37,29 @@ interface EditApplicationDialogProps {
 
 export function EditApplicationDialog({ application, open, onOpenChange }: EditApplicationDialogProps) {
   const update = useUpdateApplication()
-  const history = useApplicationHistory(application.id, open)
-  const [form, setForm] = useState({
-    company_name: application.company_name,
-    company_domain: application.company_domain ?? '',
-    role: application.role,
-    applied_on: application.applied_on,
-    notes: application.notes ?? '',
-  })
-  const [logo, setLogo] = useState<LogoValue>(() => initialLogo(application))
+  // Snapshot at open: only fields the user changes are sent. The applied date is edited
+  // through the timeline's first entry, so the two can never disagree.
+  const [initial] = useState(() => formFrom(application))
+  const [form, setForm] = useState(initial)
+  const [initialLogoValue] = useState(() => initialLogo(application))
+  const [logo, setLogo] = useState<LogoValue>(initialLogoValue)
   const lookup = useCompanyLogo(form.company_name, form.company_domain)
 
   const set = (key: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }))
 
   const save = async () => {
+    const changes: ApplicationUpdate = {}
+    if (form.company_name !== initial.company_name) changes.company_name = form.company_name.trim()
+    if (form.company_domain !== initial.company_domain) changes.company_domain = form.company_domain.trim() || null
+    if (form.role !== initial.role) changes.role = form.role.trim()
+    if (form.notes !== initial.notes) changes.notes = form.notes.trim() || null
+    const logoUrl = pickLogoUrl(logo, lookup.data?.logo_url ?? application.logo_url)
+    if (logo !== initialLogoValue || logoUrl !== application.logo_url) changes.logo_url = logoUrl
+
+    if (!Object.keys(changes).length) return onOpenChange(false)
     try {
-      await update.mutateAsync({
-        id: application.id,
-        company_name: form.company_name.trim(),
-        company_domain: form.company_domain.trim() || null,
-        role: form.role.trim(),
-        applied_on: form.applied_on,
-        notes: form.notes.trim() || null,
-        logo_url: pickLogoUrl(logo, lookup.data?.logo_url ?? application.logo_url),
-      })
+      await update.mutateAsync({ id: application.id, ...changes })
       toast.success('Application updated')
       onOpenChange(false)
     } catch (error) {
@@ -73,11 +77,8 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
           <Field label="Website" htmlFor="edit-domain">
             <Input id="edit-domain" placeholder="stripe.com" value={form.company_domain} onChange={set('company_domain')} />
           </Field>
-          <Field label="Role" htmlFor="edit-role">
+          <Field label="Role" htmlFor="edit-role" className="sm:col-span-2">
             <Input id="edit-role" value={form.role} onChange={set('role')} />
-          </Field>
-          <Field label="Date applied" htmlFor="edit-applied">
-            <Input id="edit-applied" type="date" max={todayISO()} className="font-mono" value={form.applied_on} onChange={set('applied_on')} />
           </Field>
         </div>
         <LogoPicker
@@ -92,21 +93,7 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
           <Textarea id="edit-notes" value={form.notes} onChange={set('notes')} />
         </Field>
 
-        {!!history.data?.length && (
-          <div className="flex flex-col gap-3">
-            <p className="text-[13px] font-medium">Timeline</p>
-            <ol className="relative flex flex-col gap-3 border-l border-border pl-5">
-              {history.data.map((event) => (
-                <li key={event.id} className="relative text-sm">
-                  <span className="absolute top-1.5 -left-[1.6rem] size-2.5 rounded-full border-2 border-surface bg-accent" />
-                  <span className="font-medium">{stageLabel(event.to_stage, event.custom_stage_label)}</span>
-                  {event.event_date && <span className="text-muted"> · on {formatDate(event.event_date)}</span>}
-                  <span className="block font-mono text-[11px] text-subtle">{formatDate(event.created_at, 'd MMM yyyy, HH:mm')}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+        <TimelineEditor applicationId={application.id} />
       </div>
       <div className="mt-5 flex justify-end gap-2 border-t border-border pt-4">
         <Button variant="ghost" onClick={() => onOpenChange(false)}>

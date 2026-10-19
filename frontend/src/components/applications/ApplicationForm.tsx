@@ -8,11 +8,12 @@ import { z } from 'zod'
 import { useCreateApplication } from '@/api/applications'
 import { useCompanyLogo } from '@/api/logos'
 import { Button } from '@/components/ui/Button'
+import { DatePicker } from '@/components/ui/DatePicker'
 import { Field } from '@/components/ui/Field'
 import { Input, Textarea } from '@/components/ui/Input'
 import { errorMessage } from '@/lib/api'
 import { type LogoValue, pickLogoUrl } from '@/lib/logos'
-import type { ReminderChoice } from '@/lib/reminders'
+import { type ReminderChoice, reminderPayload } from '@/lib/reminders'
 import { todayISO } from '@/lib/utils'
 
 import { LogoPicker } from './LogoPicker'
@@ -60,7 +61,7 @@ export function ApplicationForm() {
     formState: { errors },
   } = useForm<FormInput, unknown, FormOutput>({ resolver: zodResolver(schema), defaultValues: DEFAULT_VALUES })
 
-  const [company, domain] = useWatch({ control, name: ['company_name', 'company_domain'] })
+  const [company, domain, reminder] = useWatch({ control, name: ['company_name', 'company_domain', 'reminder'] })
   const lookup = useCompanyLogo(company ?? '', DOMAIN_PATTERN.test(domain ?? '') ? (domain ?? '') : '')
 
   const onSubmit = handleSubmit(async ({ reminder, company_domain, notes, ...values }) => {
@@ -70,7 +71,7 @@ export function ApplicationForm() {
         company_domain: company_domain || lookup.data?.domain || null,
         logo_url: pickLogoUrl(logo, lookup.data?.logo_url ?? null),
         notes: notes.trim() || null,
-        ...(reminder.mode === 'days' ? { reminder_days: reminder.days } : { reminder_on: reminder.date }),
+        ...reminderPayload(reminder),
       })
       toast.success(`${created.company_name} added to your pipeline`)
       reset({ ...DEFAULT_VALUES, applied_on: todayISO() })
@@ -100,7 +101,13 @@ export function ApplicationForm() {
           <Input id="role" placeholder="e.g. Software Engineer Intern" aria-invalid={!!errors.role} {...register('role')} />
         </Field>
         <Field label="Date applied" htmlFor="applied_on" error={errors.applied_on?.message}>
-          <Input id="applied_on" type="date" max={todayISO()} className="font-mono" aria-invalid={!!errors.applied_on} {...register('applied_on')} />
+          <Controller
+            control={control}
+            name="applied_on"
+            render={({ field }) => (
+              <DatePicker id="applied_on" value={field.value} onChange={field.onChange} max={todayISO()} invalid={!!errors.applied_on} />
+            )}
+          />
         </Field>
       </div>
 
@@ -114,11 +121,11 @@ export function ApplicationForm() {
         isFetching={lookup.isFetching}
       />
 
-      <Field label="Remind me to check in" hint="Counted from today, the day you add it.">
+      <Field label="Remind me to check in" hint={reminder?.mode === 'days' ? 'Counted from today, the day you add it.' : undefined}>
         <Controller
           control={control}
           name="reminder"
-          render={({ field }) => <ReminderPicker value={field.value} onChange={field.onChange} allowToday />}
+          render={({ field }) => <ReminderPicker value={field.value} onChange={field.onChange} allowToday allowNone />}
         />
       </Field>
 

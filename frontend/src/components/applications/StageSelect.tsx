@@ -15,7 +15,7 @@ export function StageSelect({ application }: { application: Application }) {
   const updateStage = useUpdateStage()
   const [pendingStage, setPendingStage] = useState<Stage | null>(null)
 
-  const commit = (stage: Stage, extra: { event_date?: string; custom_stage_label?: string } = {}) =>
+  const commit = (stage: Stage, extra: { event_date?: string; custom_stage_label?: string; remind?: boolean } = {}) =>
     updateStage.mutateAsync({ id: application.id, stage, ...extra }).then(
       (updated) => {
         toast.success(`${updated.company_name} moved to ${STAGES[stage].label.replace('…', '')}`)

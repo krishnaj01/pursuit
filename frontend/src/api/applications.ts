@@ -9,6 +9,7 @@ import type {
   ApplicationUpdate,
   ReminderUpdate,
   StageEvent,
+  StageEventUpdate,
   StageUpdate,
 } from '@/types'
 
@@ -66,5 +67,25 @@ export const useSetReminder = () =>
 export const useDeleteApplication = () =>
   useMutation({
     mutationFn: (id: string) => api.delete(`/applications/${id}`),
+    onSuccess: invalidateAll,
+  })
+
+export const useClearReminder = () =>
+  useMutation({
+    mutationFn: async (id: string) => (await api.delete<Application>(`/applications/${id}/reminder`)).data,
+    onSuccess: invalidateAll,
+  })
+
+export const useUpdateStageEvent = () =>
+  useMutation({
+    mutationFn: async ({ applicationId, eventId, ...payload }: StageEventUpdate & { applicationId: string; eventId: string }) =>
+      (await api.patch<Application>(`/applications/${applicationId}/history/${eventId}`, payload)).data,
+    onSuccess: invalidateAll,
+  })
+
+export const useDeleteStageEvent = () =>
+  useMutation({
+    mutationFn: async ({ applicationId, eventId }: { applicationId: string; eventId: string }) =>
+      (await api.delete<Application>(`/applications/${applicationId}/history/${eventId}`)).data,
     onSuccess: invalidateAll,
   })

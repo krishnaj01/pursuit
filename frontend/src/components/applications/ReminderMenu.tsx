@@ -1,8 +1,8 @@
-import { BellPlus, CalendarClock } from 'lucide-react'
+import { BellOff, BellPlus, CalendarClock } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useSetReminder } from '@/api/applications'
+import { useClearReminder, useSetReminder } from '@/api/applications'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { Menu, MenuContent, MenuItem, MenuLabel, MenuSeparator, MenuTrigger } from '@/components/ui/Menu'
@@ -14,13 +14,15 @@ import type { Application, ReminderUpdate } from '@/types'
 
 import { ReminderPicker } from './ReminderPicker'
 
-/** Schedule the next status check (3/5/7/15 days or custom). Hidden for rejected applications. */
+/** Schedule the next check-in (3/5/7/15 days, custom) or turn reminders off. Hidden when rejected. */
 export function ReminderMenu({ application, emphasize }: { application: Application; emphasize?: boolean }) {
   const setReminder = useSetReminder()
+  const clearReminder = useClearReminder()
   const [customOpen, setCustomOpen] = useState(false)
   const [choice, setChoice] = useState<ReminderChoice>({ mode: 'days', days: 10 })
 
   if (application.stage === 'rejected') return null
+  const hasReminder = !!application.next_reminder_on
 
   const schedule = (payload: ReminderUpdate) =>
     setReminder.mutateAsync({ id: application.id, ...payload }).then(
@@ -31,12 +33,27 @@ export function ReminderMenu({ application, emphasize }: { application: Applicat
       (error) => toast.error(errorMessage(error, 'Could not set the reminder')),
     )
 
+  const removeReminder = () =>
+    clearReminder.mutateAsync(application.id).then(
+      () => toast.success(`Reminder removed for ${application.company_name}`),
+      (error) => toast.error(errorMessage(error, 'Could not remove the reminder')),
+    )
+
+  const submitCustom = () => {
+    if (choice.mode === 'none') {
+      setCustomOpen(false)
+      void removeReminder()
+    } else {
+      void schedule(choice.mode === 'days' ? { days: choice.days } : { on_date: choice.date })
+    }
+  }
+
   return (
     <>
       <Menu>
         <MenuTrigger asChild>
           <Button variant={emphasize ? 'highlight' : 'secondary'} size="sm" aria-label="Set next reminder">
-            <BellPlus /> {emphasize ? 'Set next' : 'Snooze'}
+            <BellPlus /> {emphasize ? 'Set next' : hasReminder ? 'Reschedule' : 'Remind me'}
           </Button>
         </MenuTrigger>
         <MenuContent align="end">
@@ -46,10 +63,17 @@ export function ReminderMenu({ application, emphasize }: { application: Applicat
               <CalendarClock /> In {days} days
             </MenuItem>
           ))}
-          <MenuSeparator />
           <MenuItem onSelect={() => setCustomOpen(true)}>
             <CalendarClock /> Custom…
           </MenuItem>
+          {hasReminder && (
+            <>
+              <MenuSeparator />
+              <MenuItem onSelect={removeReminder}>
+                <BellOff /> No reminder
+              </MenuItem>
+            </>
+          )}
         </MenuContent>
       </Menu>
 
@@ -60,16 +84,13 @@ export function ReminderMenu({ application, emphasize }: { application: Applicat
         description={`When should we nudge you about ${application.company_name}?`}
       >
         <div className="flex flex-col gap-6">
-          <ReminderPicker value={choice} onChange={setChoice} />
+          <ReminderPicker value={choice} onChange={setChoice} allowNone={hasReminder} />
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setCustomOpen(false)}>
               Cancel
             </Button>
-            <Button
-              loading={setReminder.isPending}
-              onClick={() => schedule(choice.mode === 'days' ? { days: choice.days } : { on_date: choice.date })}
-            >
-              Set reminder
+            <Button loading={setReminder.isPending || clearReminder.isPending} onClick={submitCustom}>
+              {choice.mode === 'none' ? 'Remove reminder' : 'Set reminder'}
             </Button>
           </div>
         </div>

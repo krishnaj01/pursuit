@@ -1,4 +1,4 @@
-import { CalendarCheck, CircleSlash } from 'lucide-react'
+import { BellOff, CalendarCheck, CircleSlash } from 'lucide-react'
 
 import { stageLabel } from '@/lib/stages'
 import { cn, daysFromToday, formatDate, relativeDay } from '@/lib/utils'
@@ -9,7 +9,8 @@ export function ReminderCell({ application }: { application: Application }) {
   if (!next || stage === 'rejected') {
     return (
       <span className="inline-flex items-center gap-1.5 text-sm text-subtle">
-        <CircleSlash className="size-3.5" /> No reminders
+        {stage === 'rejected' ? <CircleSlash className="size-3.5" /> : <BellOff className="size-3.5" />}
+        {stage === 'rejected' ? 'Closed' : 'No reminder'}
       </span>
     )
   }

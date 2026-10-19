@@ -220,14 +220,6 @@
     outline: 2px solid var(--ring);
     outline-offset: 2px;
   }
-
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 0.6;
-    cursor: pointer;
-  }
-  .dark input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
 }
 
 @layer components {
