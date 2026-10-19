@@ -30,7 +30,7 @@ export function NewApplicationPage() {
         title="Log an application"
         description="Add where you applied and when to check back in. We'll nudge you on the day."
       />
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <Card className="animate-pop-in">
           <CardContent className="p-6 sm:p-8">
             <ApplicationForm />
@@ -55,7 +55,7 @@ export function NewApplicationPage() {
                   <p className="truncate text-sm font-medium">{app.company_name}</p>
                   <p className="truncate text-xs text-muted">{app.role}</p>
                 </div>
-                <div className="flex flex-col items-end gap-1">
+                <div className="flex max-w-[45%] min-w-0 shrink-0 flex-col items-end gap-1">
                   <StagePill stage={app.stage} customLabel={app.custom_stage_label} className="px-2 text-[10px]" />
                   <span className="font-mono text-[10px] text-subtle">{formatDate(app.created_at, 'd MMM')}</span>
                 </div>

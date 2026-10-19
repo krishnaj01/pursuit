@@ -25,9 +25,9 @@ export function StageBreakdown({ byStage, total }: { byStage: Stats['by_stage'];
               className="grid grid-cols-[7.5rem_1fr_auto] items-center gap-3 text-sm"
               title={`${stageLabel(stage)}: ${count} of ${total}`}
             >
-              <span className="flex items-center gap-2 truncate text-muted">
+              <span className="flex min-w-0 items-center gap-2.5 pl-1 text-muted">
                 <span className="stage-dot size-2 shrink-0 rounded-full" style={{ '--stage': STAGES[stage].color } as CSSProperties} />
-                {stageLabel(stage)}
+                <span className="truncate">{stageLabel(stage)}</span>
               </span>
               <span className="h-2.5 overflow-hidden rounded-r bg-surface-sunken">
                 <span

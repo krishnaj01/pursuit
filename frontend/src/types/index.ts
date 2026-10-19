@@ -104,6 +104,7 @@ export interface LogoResolution {
 export interface Stats {
   total: number
   active: number
+  closed: number
   rejected: number
   offers: number
   interviewing: number

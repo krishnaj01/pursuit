@@ -1,17 +1,24 @@
-import { BellOff, CalendarCheck, CircleSlash } from 'lucide-react'
+import { BellOff, CalendarCheck, CircleSlash, Trophy } from 'lucide-react'
 
 import { TruncatedText } from '@/components/ui/TruncatedText'
-import { stageLabel } from '@/lib/stages'
+import { isClosed, stageLabel } from '@/lib/stages'
 import { cn, daysFromToday, formatDate, relativeDay } from '@/lib/utils'
 import type { Application } from '@/types'
 
 export function ReminderCell({ application }: { application: Application }) {
   const { next_reminder_on: next, reminder_kind: kind, stage } = application
-  if (!next || stage === 'rejected') {
+  if (stage === 'offer') {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-sm font-medium whitespace-nowrap text-success">
+        <Trophy className="size-3.5" /> Closed · offer
+      </span>
+    )
+  }
+  if (!next || isClosed(stage)) {
     return (
       <span className="inline-flex items-center gap-1.5 text-sm whitespace-nowrap text-subtle">
-        {stage === 'rejected' ? <CircleSlash className="size-3.5" /> : <BellOff className="size-3.5" />}
-        {stage === 'rejected' ? 'Closed' : 'No reminder'}
+        {isClosed(stage) ? <CircleSlash className="size-3.5" /> : <BellOff className="size-3.5" />}
+        {isClosed(stage) ? 'Closed' : 'No reminder'}
       </span>
     )
   }

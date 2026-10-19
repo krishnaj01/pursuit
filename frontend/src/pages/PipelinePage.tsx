@@ -25,7 +25,7 @@ const EMPTY_COPY: Record<ApplicationFilter, { title: string; description: string
   all: { title: 'Your pipeline is empty', description: 'Log your first application and it will show up here, sorted by the next reminder.' },
   due: { title: 'Nothing due today', description: 'No check-ins needed right now. Enjoy the quiet — or send another application.' },
   upcoming: { title: 'No upcoming reminders', description: 'Applications with future reminders will be listed here.' },
-  closed: { title: 'No closed applications', description: 'Rejected applications land here, so the rest of your pipeline stays focused.' },
+  closed: { title: 'No closed applications', description: 'Offers and rejections land here, so the rest of your pipeline stays focused.' },
 }
 
 export function PipelinePage() {
@@ -96,7 +96,7 @@ export function PipelinePage() {
             {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
           </div>
         ) : data?.length ? (
-          <PipelineTable data={data} search={search} highlightedIds={highlightedIds} />
+          <PipelineTable key={pipelineFilter} data={data} search={search} highlightedIds={highlightedIds} />
         ) : (
           <EmptyState
             icon={Inbox}

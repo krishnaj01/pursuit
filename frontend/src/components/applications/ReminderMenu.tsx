@@ -8,20 +8,21 @@ import { Dialog } from '@/components/ui/Dialog'
 import { Menu, MenuContent, MenuItem, MenuLabel, MenuSeparator, MenuTrigger } from '@/components/ui/Menu'
 import { errorMessage } from '@/lib/api'
 import { REMINDER_PRESETS } from '@/lib/constants'
+import { isClosed } from '@/lib/stages'
 import type { ReminderChoice } from '@/lib/reminders'
 import { formatDate } from '@/lib/utils'
 import type { Application, ReminderUpdate } from '@/types'
 
 import { ReminderPicker } from './ReminderPicker'
 
-/** Schedule the next check-in (3/5/7/15 days, custom) or turn reminders off. Hidden when rejected. */
+/** Schedule the next check-in (3/5/7/15 days, custom) or turn reminders off. Hidden when closed. */
 export function ReminderMenu({ application, emphasize }: { application: Application; emphasize?: boolean }) {
   const setReminder = useSetReminder()
   const clearReminder = useClearReminder()
   const [customOpen, setCustomOpen] = useState(false)
   const [choice, setChoice] = useState<ReminderChoice>({ mode: 'days', days: 10 })
 
-  if (application.stage === 'rejected') return null
+  if (isClosed(application.stage)) return null
   const hasReminder = !!application.next_reminder_on
   const buttonLabel = emphasize ? 'Set next' : hasReminder ? 'Reschedule' : 'Remind me'
 

@@ -18,7 +18,7 @@ export const STAGES: Record<Stage, StageMeta> = {
   round_1: { label: 'Round 1', color: 'var(--stage-round-1)', datePrompt: 'When is round 1?' },
   round_2: { label: 'Round 2', color: 'var(--stage-round-2)', datePrompt: 'When is round 2?' },
   interview: { label: 'Interview', color: 'var(--stage-interview)', datePrompt: 'When is the interview?' },
-  offer: { label: 'Offer', color: 'var(--stage-offer)', datePrompt: 'When do you need to respond to the offer?' },
+  offer: { label: 'Offer', color: 'var(--stage-offer)' },
   rejected: { label: 'Rejected', color: 'var(--stage-rejected)' },
   custom: { label: 'Custom…', color: 'var(--stage-custom)', datePrompt: 'When is this happening?' },
 }
@@ -36,10 +36,15 @@ export const STAGE_ORDER: Stage[] = [
   'custom',
 ]
 
+/** Finished applications: no reminders, listed under "Closed". Mirrors the backend. */
+export const CLOSED_STAGES: ReadonlySet<Stage> = new Set(['offer', 'rejected'])
+
 /** Stages that don't need an accompanying event date. */
-export const UNDATED_STAGES: ReadonlySet<Stage> = new Set(['applied', 'rejected'])
+export const UNDATED_STAGES: ReadonlySet<Stage> = new Set(['applied', ...CLOSED_STAGES])
 
 export const REMINDER_PRESETS = [3, 5, 7, 15] as const
+
+export const PAGE_SIZE_OPTIONS = [10, 20, 50] as const
 
 export const NOTIFICATION_POLL_MS = 60_000
 export const LOGO_LOOKUP_DEBOUNCE_MS = 450

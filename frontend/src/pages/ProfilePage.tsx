@@ -44,7 +44,12 @@ export function ProfilePage() {
             <StatTile icon={MessagesSquare} label="In interviews" value={stats.interviewing} hint="Round 1, round 2 or interview" />
             <StatTile icon={Trophy} label="Offers" value={stats.offers} hint={`${percent(stats.offer_rate)} offer rate`} />
             <StatTile icon={Hourglass} label="Due for a check-in" value={stats.due_today} hint="Reminders due today or overdue" />
-            <StatTile icon={CalendarDays} label="Closed" value={stats.rejected} hint="Rejections — part of the process" />
+            <StatTile
+              icon={CalendarDays}
+              label="Closed"
+              value={stats.closed}
+              hint={`${stats.offers} offer${stats.offers === 1 ? '' : 's'} · ${stats.rejected} rejection${stats.rejected === 1 ? '' : 's'}`}
+            />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
