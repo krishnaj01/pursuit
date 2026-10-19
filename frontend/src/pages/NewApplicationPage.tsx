@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { useApplications } from '@/api/applications'
 import { ApplicationForm } from '@/components/applications/ApplicationForm'
 import { NotePreview } from '@/components/applications/NotePreview'
+import { SiteFooter } from '@/components/layout/SiteFooter'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
 import { CompanyLogo } from '@/components/ui/CompanyLogo'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -73,6 +74,7 @@ export function NewApplicationPage() {
           </CardContent>
         </Card>
       </div>
+      <SiteFooter />
     </>
   )
 }

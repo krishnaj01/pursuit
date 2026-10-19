@@ -1,6 +1,10 @@
+import { SiGithub } from '@icons-pack/react-simple-icons'
+import { Heart, Star } from 'lucide-react'
 import { NavLink } from 'react-router'
 
 import { useApplications } from '@/api/applications'
+import { IconLink } from '@/components/ui/IconLink'
+import { SOCIAL_LINKS } from '@/lib/socials'
 import { cn } from '@/lib/utils'
 
 import { Logo } from './Logo'
@@ -43,6 +47,17 @@ export function Sidebar() {
         <p className="mt-1 text-xs leading-relaxed text-muted">
           Reminders surface in the bell each morning — check in, then schedule the next nudge.
         </p>
+      </div>
+      <div className="mt-3 flex items-center justify-center gap-1">
+        <IconLink href={SOCIAL_LINKS.github} label="GitHub">
+          <SiGithub />
+        </IconLink>
+        <IconLink href={SOCIAL_LINKS.support} label="Support" className="hover:text-danger">
+          <Heart />
+        </IconLink>
+        <IconLink href={SOCIAL_LINKS.repo} label="Star on GitHub" className="hover:text-warning">
+          <Star />
+        </IconLink>
       </div>
     </aside>
   )
