@@ -81,6 +81,7 @@
   --content-max: 76rem;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration: 180ms;
+  --duration-reveal: 1200ms;
 
   color-scheme: light;
 }
@@ -231,6 +232,33 @@
     background: color-mix(in oklab, var(--stage) 12%, transparent);
     border-color: color-mix(in oklab, var(--stage) 28%, transparent);
   }
+  /* Login-page product showcase: the frame rises and un-tilts into place when scrolled
+     into view, and the screenshot dissolves into the page at the bottom. */
+  .showcase-stage {
+    perspective: 1800px;
+  }
+  .showcase-frame {
+    transform-origin: 50% 0%;
+    transition:
+      transform var(--duration-reveal) var(--ease-out),
+      opacity var(--duration-reveal) var(--ease-out);
+  }
+  .showcase-frame[data-revealed="false"] {
+    opacity: 0;
+    transform: translateY(96px) rotateX(24deg) scale(0.94);
+  }
+  .showcase-fade {
+    mask-image: linear-gradient(to bottom, #000 45%, transparent 96%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .showcase-frame,
+    .showcase-frame[data-revealed="false"] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
   /* Google's sign-in button lives in an iframe. If the page's colour scheme (dark) differs
      from the iframe's (light), Chrome paints the iframe with an opaque white backdrop —
      a white box around the button. Matching the schemes keeps it transparent. */

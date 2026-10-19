@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { useGoogleSignIn } from '@/api/auth'
 import { PrivacyNote } from '@/components/auth/PrivacyNote'
+import { ProductShowcase } from '@/components/auth/ProductShowcase'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { Logo } from '@/components/layout/Logo'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
@@ -79,6 +80,8 @@ export function LoginPage() {
             </div>
           ))}
         </div>
+
+        <ProductShowcase />
 
         <PrivacyNote />
       </main>
