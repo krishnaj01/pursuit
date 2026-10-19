@@ -19,10 +19,9 @@ export function ExtensionConnectPage() {
   const revokeToken = useRevokeExtensionToken()
 
   const detect = () => detectExtension().then((version) => setStatus(version ? 'ready' : 'missing'))
-  const check = () => {
-    setStatus('checking')
-    void detect()
-  }
+  // The extension can only talk to pages loaded after it was installed, so re-check by
+  // reloading rather than pinging this already-open page again.
+  const check = () => window.location.reload()
   // Initial state is already 'checking'; just start detection on mount.
   useEffect(() => {
     void detect()
