@@ -19,10 +19,15 @@ class Settings(BaseSettings):
     auth_cookie_name: str = "jt_session"
     cookie_secure: bool = False
 
-    frontend_origin: str = "http://localhost:5173"
+    frontend_origin: str = "http://localhost:5173"  # comma-separated for several
 
     logo_dev_publishable_key: str | None = None
     logo_dev_secret_key: str | None = None
+
+    @property
+    def frontend_origins(self) -> list[str]:
+        """`FRONTEND_ORIGIN` may list several origins, comma-separated."""
+        return [o.strip().rstrip("/") for o in self.frontend_origin.split(",") if o.strip()]
 
     @field_validator("database_url")
     @classmethod
