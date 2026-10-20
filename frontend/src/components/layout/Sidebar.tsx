@@ -7,6 +7,7 @@ import { IconLink } from '@/components/ui/IconLink'
 import { SOCIAL_LINKS } from '@/lib/socials'
 import { cn } from '@/lib/utils'
 
+import { Copyright } from './Copyright'
 import { Logo } from './Logo'
 import { NAV_ITEMS } from './navItems'
 
@@ -59,6 +60,7 @@ export function Sidebar() {
           <Star />
         </IconLink>
       </div>
+      <Copyright className="mt-2 text-center" />
     </aside>
   )
 }

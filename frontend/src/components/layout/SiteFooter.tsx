@@ -6,6 +6,8 @@ import { IconLink } from '@/components/ui/IconLink'
 import { SOCIAL_LINKS } from '@/lib/socials'
 import { cn } from '@/lib/utils'
 
+import { Copyright } from './Copyright'
+
 export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer className={cn('mt-12 flex w-full flex-col items-center gap-3 border-t border-border pt-6 text-center', className)}>
@@ -27,6 +29,7 @@ export function SiteFooter({ className }: { className?: string }) {
       <Link to="/privacy" className="text-xs text-subtle underline-offset-4 transition-colors hover:text-fg hover:underline">
         Privacy policy
       </Link>
+      <Copyright />
     </footer>
   )
 }

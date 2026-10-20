@@ -1,6 +1,7 @@
 import type { Stage } from '@/types'
 
 export const APP_NAME = 'Pursuit'
+export const COPYRIGHT_HOLDER = APP_NAME
 
 interface StageMeta {
   label: string
