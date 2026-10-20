@@ -2,6 +2,8 @@ import { BellRing, Copy, MousePointerClick, ShieldCheck, type LucideIcon } from 
 
 import { GetExtensionButtons } from '@/components/extension/GetExtensionButtons'
 
+import { BrowserBar } from './BrowserBar'
+
 const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: MousePointerClick,
@@ -30,14 +32,7 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
 function PromptIllustration() {
   return (
     <div aria-hidden className="relative overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
-      <div className="flex items-center gap-2 border-b border-border bg-surface-raised px-4 py-2.5">
-        <span className="size-2.5 rounded-full bg-border-strong" />
-        <span className="size-2.5 rounded-full bg-border-strong" />
-        <span className="size-2.5 rounded-full bg-border-strong" />
-        <span className="ml-3 truncate rounded-md bg-surface-sunken px-3 py-0.5 font-mono text-[11px] text-subtle">
-          jobs.lever.co/linear/…/thanks
-        </span>
-      </div>
+      <BrowserBar url="jobs.lever.co/linear/…/thanks" extensionActive />
       <div className="relative h-[21rem] px-6 py-6 sm:h-72">
         <p className="font-display text-lg font-semibold">Thank you for applying!</p>
         <p className="mt-1 text-sm text-muted">We've received your application for Product Engineer.</p>

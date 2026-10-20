@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { BrowserBar } from './BrowserBar'
+
 /** Reveal once the element is ~20% on screen. */
 function useRevealOnScroll<T extends Element>() {
   const ref = useRef<T>(null)
@@ -48,15 +50,7 @@ export function ProductShowcase() {
           data-revealed={revealed}
           className="showcase-frame showcase-fade overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
         >
-          {/* Minimal app-window chrome */}
-          <div className="flex items-center gap-2 border-b border-border bg-surface-raised px-4 py-3">
-            <span className="size-2.5 rounded-full bg-border-strong" />
-            <span className="size-2.5 rounded-full bg-border-strong" />
-            <span className="size-2.5 rounded-full bg-border-strong" />
-            <span className="ml-3 rounded-md bg-surface-sunken px-3 py-0.5 font-mono text-[11px] text-subtle">
-              Pursuit · Pipeline
-            </span>
-          </div>
+          <BrowserBar url={`${window.location.host}/pipeline`} />
           <img
             src="/showcase/pipeline-light.webp"
             alt="The Pursuit pipeline: applications sorted by their next reminder, with stages, logos and follow-ups"
