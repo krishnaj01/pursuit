@@ -34,6 +34,8 @@ Requires a free Pursuit account (sign in with Google at your-pursuit-domain).
 
 They show a fictional company (Fernwood) and the demo account, so no real applications appear.
 
+**Small promo tile** (440×280): `store-assets/promo-tile-440x280.png`
+
 ## Privacy practices
 
 **Single purpose:**
