@@ -50,7 +50,7 @@ export function ProductShowcase() {
           data-revealed={revealed}
           className="showcase-frame showcase-fade overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
         >
-          <BrowserBar url={`${window.location.host}/pipeline`} />
+          <BrowserBar url="pursuit-app.live/pipeline" />
           <img
             src="/showcase/pipeline-light.webp"
             alt="The Pursuit pipeline: applications sorted by their next reminder, with stages, logos and follow-ups"
