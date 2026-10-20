@@ -1,6 +1,6 @@
 # Chrome Web Store listing — Pursuit
 
-Copy these into the Developer Dashboard. Replace `your-pursuit-domain` with your real URL.
+Copy these into the Developer Dashboard. Replace `www.pursuit-app.live` with your real URL.
 
 ## Store listing
 
@@ -20,7 +20,7 @@ every application by hand.
 • Private by design — nothing is saved without your click, details go only to your own Pursuit
   account, and you can disconnect the extension any time.
 
-Requires a free Pursuit account (sign in with Google at your-pursuit-domain).
+Requires a free Pursuit account (sign in with Google at www.pursuit-app.live).
 
 **Category:** Productivity → Workflow & Planning · **Language:** English
 
@@ -49,7 +49,7 @@ Save job applications the user is viewing or has just submitted to the user's Pu
 - `scripting` — inject the code that reads those details into that tab, and register the
   optional job-site script once the user enables auto-prompt.
 - `storage` — keep the user's Pursuit connection token and the auto-prompt setting.
-- Host permission for `your-pursuit-domain` — send saved applications to the user's Pursuit
+- Host permission for `www.pursuit-app.live` — send saved applications to the user's Pursuit
   account and receive the connection token from Pursuit's Connect page.
 - Optional host permissions (`job-boards.greenhouse.io`, `job-boards.eu.greenhouse.io`,
   `boards.greenhouse.io`, `jobs.lever.co`, `jobs.eu.lever.co`, `jobs.ashbyhq.com`,
@@ -65,8 +65,14 @@ Save job applications the user is viewing or has just submitted to the user's Pu
   the user chooses to save it.
 - *Authentication information*: a Pursuit access token, stored locally to connect to the
   user's account.
+- *Web history*: the URL and title of the job page the user opens the popup on or chooses to
+  log (sent to check for duplicates and saved with the application). Not a browsing history —
+  only pages the user acts on.
+
+Not collected: personally identifiable information, health, financial and payment, personal
+communications, location, user activity.
 
 **Certifications (all true):** not sold to third parties; not used or transferred for purposes
 unrelated to the item's single purpose; not used to determine creditworthiness or for lending.
 
-**Privacy policy URL:** https://your-pursuit-domain/privacy
+**Privacy policy URL:** https://www.pursuit-app.live/privacy
