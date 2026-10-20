@@ -22,7 +22,17 @@ every application by hand.
 
 Requires a free Pursuit account (sign in with Google at your-pursuit-domain).
 
-**Category:** Productivity · **Language:** English
+**Category:** Productivity → Workflow & Planning · **Language:** English
+
+**Screenshots** (1280×800, 24-bit PNG, in [`store-assets/`](store-assets/) — upload in this order):
+
+1. `1-log-in-one-click.png` — the popup filled in from a job posting
+2. `2-prompt-after-applying.png` — the auto-prompt on a confirmation page
+3. `3-no-duplicates.png` — the duplicate warning
+4. `4-your-pipeline.png` — the saved job in the Pursuit pipeline
+5. `5-connect-once.png` — the one-click Connect page
+
+They show a fictional company (Fernwood) and the demo account, so no real applications appear.
 
 ## Privacy practices
 
