@@ -3,7 +3,7 @@
  * TODO: replace with the real Chrome Web Store listing URL once the extension is published
  * (the dashboard shows it after approval, e.g. https://chromewebstore.google.com/detail/<name>/<id>).
  */
-export const CHROME_WEB_STORE_URL = 'https://chromewebstore.google.com/detail/pursuit/PLACEHOLDER'
+export const CHROME_WEB_STORE_URL = 'https://chromewebstore.google.com/detail/kgochhfmkjcghaoniaganmkmeodgphik'
 
 export type BrowserFamily = 'chrome' | 'edge' | 'brave' | 'opera' | 'firefox' | 'safari' | 'other'
 
