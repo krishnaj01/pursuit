@@ -34,6 +34,7 @@
   /* Lines */
   --border: #e4e0d8;
   --border-strong: #d2cdc3;
+  --scrollbar: #c9c3b8;
   --ring: #6a5cff;
 
   /* Brand */
@@ -101,6 +102,7 @@
 
   --border: #24242b;
   --border-strong: #33333c;
+  --scrollbar: #45454f;
   --ring: #9d93ff;
 
   --accent: #9d93ff;
@@ -222,6 +224,13 @@
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+
+  /* Thin, theme-aware scrollbars everywhere instead of the chunky OS default (Chrome, Edge,
+     Firefox; Safari keeps its own overlay scrollbars). */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
   }
 }
 

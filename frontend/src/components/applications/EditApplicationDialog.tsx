@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { useUpdateApplication } from '@/api/applications'
 import { useCompanyLogo } from '@/api/logos'
 import { Button } from '@/components/ui/Button'
-import { Dialog } from '@/components/ui/Dialog'
+import { Dialog, DialogBody } from '@/components/ui/Dialog'
 import { Field } from '@/components/ui/Field'
 import { Input, Textarea } from '@/components/ui/Input'
 import { errorMessage } from '@/lib/api'
@@ -75,7 +75,7 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} title="Edit application" className="max-w-xl">
-      <div className="flex max-h-[70vh] flex-col gap-5 overflow-y-auto pr-1">
+      <DialogBody className="flex flex-col gap-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Company" htmlFor="edit-company">
             <Input id="edit-company" value={form.company_name} onChange={set('company_name')} />
@@ -111,8 +111,8 @@ export function EditApplicationDialog({ application, open, onOpenChange }: EditA
         </Field>
 
         <TimelineEditor applicationId={application.id} />
-      </div>
-      <div className="mt-5 flex justify-end gap-2 border-t border-border pt-4">
+      </DialogBody>
+      <div className="flex shrink-0 justify-end gap-2 pt-4">
         <Button variant="ghost" onClick={() => onOpenChange(false)}>
           Cancel
         </Button>
