@@ -49,7 +49,7 @@ export function NewApplicationPage() {
             {isLoading &&
               Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
             {!isLoading && recent.length === 0 && (
-              <p className="py-6 text-center text-sm text-muted">Nothing yet — your first one goes here.</p>
+              <p className="py-6 text-center text-sm text-muted">Nothing yet, your first one goes here.</p>
             )}
             {recent.map((app) => (
               <div key={app.id} className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-surface-sunken">

@@ -129,7 +129,7 @@ async function showPrompt(ctx: InstanceType<typeof ContentScriptContext>, job: J
         const result = (await browser.runtime.sendMessage(message)) as LogFromPageResult
         if (result.status === 'logged') render(card, 'logged')
         else if (result.status === 'duplicate')
-          render(card, 'duplicate', `Already in Pursuit — logged ${new Date(result.application.created_at).toLocaleDateString()}.`)
+          render(card, 'duplicate', `Already in Pursuit, logged ${new Date(result.application.created_at).toLocaleDateString()}.`)
         else if (result.status === 'not-connected') render(card, 'not-connected')
         else render(card, 'error', result.message)
       }

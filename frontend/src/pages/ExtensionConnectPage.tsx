@@ -76,7 +76,7 @@ export function ExtensionConnectPage() {
               </div>
               <GetExtensionButtons />
               <Button variant="secondary" onClick={check}>
-                I've installed it — check again
+                I've installed it, check again
               </Button>
             </>
           )}
@@ -90,7 +90,7 @@ export function ExtensionConnectPage() {
                 <div>
                   <p className="font-medium">Extension found</p>
                   <p className="text-sm text-muted">
-                    It will be able to log and look up applications in your account — nothing else. You can disconnect it
+                    It will be able to log and look up applications in your account, nothing else. You can disconnect it
                     anytime from your profile.
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export function ExtensionConnectPage() {
                 <div>
                   <p className="font-medium">Connected</p>
                   <p className="text-sm text-muted">
-                    You're all set — open a job posting and click the Pursuit icon to log it. You can close this tab.
+                    You're all set. Open a job posting and click the Pursuit icon to log it. You can close this tab.
                   </p>
                 </div>
               </div>

@@ -8,7 +8,7 @@ const POINTS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: MousePointerClick,
     title: 'One click on any job page',
-    body: 'Company, role, link and date are filled in from the page — pick a reminder and save.',
+    body: 'Company, role, link and date are filled in from the page, just pick a reminder and save.',
   },
   {
     icon: BellRing,
@@ -71,7 +71,7 @@ export function ExtensionPromo() {
           Log applications where you apply
         </h2>
         <p className="max-w-lg text-balance text-muted">
-          The Pursuit extension reads the job page for you — no copying company names and links into a form.
+          The Pursuit extension reads the job page for you, so no more copying company names and links into a form.
         </p>
       </div>
 

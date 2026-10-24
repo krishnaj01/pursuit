@@ -23,7 +23,7 @@ const FILTERS: { value: ApplicationFilter; label: string }[] = [
 
 const EMPTY_COPY: Record<ApplicationFilter, { title: string; description: string }> = {
   all: { title: 'Your pipeline is empty', description: 'Log your first application and it will show up here, sorted by the next reminder.' },
-  due: { title: 'Nothing due today', description: 'No check-ins needed right now. Enjoy the quiet — or send another application.' },
+  due: { title: 'Nothing due today', description: 'No check-ins needed right now. Enjoy the quiet, or send another application.' },
   upcoming: { title: 'No upcoming reminders', description: 'Applications with future reminders will be listed here.' },
   closed: { title: 'No closed applications', description: 'Offers and rejections land here, so the rest of your pipeline stays focused.' },
 }
@@ -46,7 +46,7 @@ export function PipelinePage() {
       <PageHeader
         eyebrow="Pipeline"
         title="Every application, in order"
-        description="Sorted by the next reminder. Update stages inline — dated stages move your reminder to the event."
+        description="Sorted by the next reminder. Update stages inline, and dated stages move your reminder to the event."
         actions={
           <Button asChild>
             <Link to="/">

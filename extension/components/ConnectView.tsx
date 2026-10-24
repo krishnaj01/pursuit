@@ -13,7 +13,7 @@ export function ConnectView({ message }: { message?: string }) {
       <div>
         <p className="font-display text-base font-semibold">Connect to Pursuit</p>
         <p className="mt-1 text-sm text-muted">
-          {message ?? 'Link the extension to your account once — then log applications from any job page in one click.'}
+          {message ?? 'Link the extension to your account once, then log applications from any job page in one click.'}
         </p>
       </div>
       <Button onClick={() => void browser.tabs.create({ url: `${PURSUIT_URL}/extension/connect` })}>Connect</Button>

@@ -14,7 +14,7 @@ const storeLink = (label: string) => (
 
 const CONNECT_STEP = (
   <>
-    Pursuit opens its <b>Connect</b> page — click <b>Connect extension</b> (sign in first if asked).
+    Pursuit opens its <b>Connect</b> page. Click <b>Connect extension</b> (sign in first if asked).
   </>
 )
 const PIN_STEP = (
@@ -42,7 +42,7 @@ const GUIDES: Record<Exclude<BrowserFamily, 'other'>, Guide> = {
     supported: true,
     steps: [
       <>Open the {storeLink('Chrome Web Store listing')}.</>,
-      <>Edge shows a banner — click <b>Allow extensions from other stores</b>, then <b>Allow</b>.</>,
+      <>In the banner Edge shows, click <b>Allow extensions from other stores</b>, then <b>Allow</b>.</>,
       <>Click <b>Get</b>, then <b>Add extension</b>.</>,
       PIN_STEP,
       CONNECT_STEP,
@@ -60,12 +60,12 @@ const GUIDES: Record<Exclude<BrowserFamily, 'other'>, Guide> = {
   firefox: {
     label: 'Firefox',
     supported: false,
-    steps: [<>The extension isn't available for Firefox yet. Use Chrome, Edge, Brave or Arc to log applications from job pages — everything else in Pursuit works in any browser.</>],
+    steps: [<>The extension isn't available for Firefox yet. Use Chrome, Edge, Brave or Arc to log applications from job pages. Everything else in Pursuit works in any browser.</>],
   },
   safari: {
     label: 'Safari',
     supported: false,
-    steps: [<>The extension isn't available for Safari yet. Use Chrome, Edge, Brave or Arc to log applications from job pages — everything else in Pursuit works in any browser.</>],
+    steps: [<>The extension isn't available for Safari yet. Use Chrome, Edge, Brave or Arc to log applications from job pages. Everything else in Pursuit works in any browser.</>],
   },
 }
 

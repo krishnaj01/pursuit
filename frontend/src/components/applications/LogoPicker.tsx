@@ -22,7 +22,7 @@ export function LogoPicker({ company, value, onChange, autoUrl, resolvedDomain, 
   const preview = pickLogoUrl(value, autoUrl)
   const status =
     value.mode === 'none'
-      ? 'No logo — initials will be shown.'
+      ? 'No logo, initials will be shown.'
       : value.mode === 'custom'
         ? 'Using your image URL.'
         : isFetching
@@ -30,7 +30,7 @@ export function LogoPicker({ company, value, onChange, autoUrl, resolvedDomain, 
           : autoUrl
             ? `Found a logo for ${resolvedDomain}.`
             : company.trim()
-              ? 'No logo found — add a website domain or paste an image URL.'
+              ? 'No logo found. Add a website domain or paste an image URL.'
               : 'Type a company name to fetch its logo.'
 
   return (

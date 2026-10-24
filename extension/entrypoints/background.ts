@@ -44,7 +44,7 @@ export default defineBackground(() => {
 
 async function logFromPage({ details, force }: LogFromPageMessage): Promise<LogFromPageResult> {
   if (!details.company || !details.role) {
-    return { status: 'error', message: "Couldn't read the company and role — use the toolbar button instead" }
+    return { status: 'error', message: "Couldn't read the company and role, use the toolbar button instead" }
   }
   try {
     if (!force) {

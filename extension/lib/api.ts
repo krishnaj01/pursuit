@@ -23,7 +23,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (response.status === 401) {
     // Token revoked from the Pursuit profile page (or the account was deleted).
     await tokenItem.setValue(null)
-    throw new NotConnectedError('This extension was disconnected — connect it again')
+    throw new NotConnectedError('This extension was disconnected, connect it again')
   }
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as { detail?: unknown } | null

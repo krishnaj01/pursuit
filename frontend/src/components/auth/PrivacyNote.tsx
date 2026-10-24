@@ -4,12 +4,12 @@ const ITEMS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: UserRound,
     title: 'Your Google profile',
-    body: 'Name, email and photo — to sign you in and show your profile. We never see your password or anything else in your Google account.',
+    body: 'Name, email and photo, used to sign you in and show your profile. We never see your password or anything else in your Google account.',
   },
   {
     icon: ListChecks,
     title: 'What you add',
-    body: 'Companies, roles, dates, stages, notes and reminders — only to run your pipeline and stats.',
+    body: 'Companies, roles, dates, stages, notes and reminders, used only to run your pipeline and stats.',
   },
   {
     icon: Clock,
@@ -19,7 +19,7 @@ const ITEMS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Image,
     title: 'Company logos',
-    body: "To fetch a logo, only the company name or website is sent to logo.dev or Google's favicon service — never anything about you.",
+    body: "To fetch a logo, only the company name or website is sent to logo.dev or Google's favicon service, never anything about you.",
   },
   {
     icon: Cookie,
@@ -42,7 +42,7 @@ export function PrivacyNote() {
         </div>
         <div>
           <h2 id="privacy-title" className="text-lg font-semibold">What we store, and why</h2>
-          <p className="text-sm text-muted">The short version — no fine print.</p>
+          <p className="text-sm text-muted">The short version, no fine print.</p>
         </div>
       </div>
       <ul className="grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">

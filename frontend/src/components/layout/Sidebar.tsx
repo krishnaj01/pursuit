@@ -46,7 +46,7 @@ export function Sidebar() {
       <div className="mt-auto rounded-lg border border-border bg-surface-raised p-4">
         <p className="font-display text-sm font-semibold">Stay on the follow-up.</p>
         <p className="mt-1 text-xs leading-relaxed text-muted">
-          Reminders surface in the bell each morning — check in, then schedule the next nudge.
+          Reminders surface in the bell each morning. Check in, then schedule the next nudge.
         </p>
       </div>
       <div className="mt-3 flex items-center justify-center gap-1">

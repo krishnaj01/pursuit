@@ -40,15 +40,15 @@ export function PrivacyPage() {
 
         <Section title="What we store">
           <p>
-            <strong>Your Google profile</strong> — name, email address and profile photo, shared by Google when you sign in.
+            <strong>Your Google profile</strong>: name, email address and profile photo, shared by Google when you sign in.
             We never see your Google password or anything else in your Google account.
           </p>
           <p>
-            <strong>What you add</strong> — companies, roles, dates, stages, job posting links, notes, reminders and the
+            <strong>What you add</strong>: companies, roles, dates, stages, job posting links, notes, reminders and the
             history of each application.
           </p>
           <p>
-            <strong>Your timezone</strong> — so reminders arrive on the right day for you.
+            <strong>Your timezone</strong>, so reminders arrive on the right day for you.
           </p>
         </Section>
 
@@ -76,7 +76,7 @@ export function PrivacyPage() {
         <Section title="Services we rely on">
           <p>
             <strong>Google</strong> for sign-in. <strong>logo.dev</strong> and <strong>Google's favicon service</strong>{' '}
-            to fetch company logos — they receive only a company name or website, never anything about you. Our hosting
+            to fetch company logos, and they receive only a company name or website, never anything about you. Our hosting
             and database providers store the data above on our behalf.
           </p>
         </Section>

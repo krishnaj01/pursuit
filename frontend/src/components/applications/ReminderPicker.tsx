@@ -86,7 +86,7 @@ export function ReminderPicker({ value, onChange, allowToday, allowNone, id }: R
       )}
 
       {value.mode === 'none' ? (
-        <p className="text-xs text-muted">No reminder — you can add one any time from the pipeline.</p>
+        <p className="text-xs text-muted">No reminder, you can add one any time from the pipeline.</p>
       ) : (
         <p className="text-xs text-muted">
           Next check-in:{' '}

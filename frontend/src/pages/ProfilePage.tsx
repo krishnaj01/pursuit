@@ -42,7 +42,7 @@ export function ProfilePage() {
         <div className="flex flex-col gap-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <StatTile icon={Briefcase} label="Applications" value={stats.total} hint={`${stats.active} still active`} />
-            <StatTile icon={Reply} label="Response rate" value={percent(stats.response_rate)} hint="Heard back — past Applied or Awaiting, rejections included" />
+            <StatTile icon={Reply} label="Response rate" value={percent(stats.response_rate)} hint="Heard back, i.e. moved past Applied or Awaiting (rejections included)" />
             <StatTile icon={MessagesSquare} label="In interviews" value={stats.interviewing} hint="Round 1, round 2 or interview" />
             <StatTile icon={Trophy} label="Offers" value={stats.offers} hint={`${percent(stats.offer_rate)} offer rate`} />
             <StatTile icon={Hourglass} label="Due for a check-in" value={stats.due_today} hint="Reminders due today or overdue" />

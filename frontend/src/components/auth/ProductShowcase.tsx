@@ -36,7 +36,7 @@ export function ProductShowcase() {
           Your whole search, at a glance
         </h2>
         <p className="max-w-md text-balance text-muted">
-          Every application in one place, sorted by what needs you next — stages, logos and follow-ups included.
+          Every application in one place, sorted by what needs you next, with stages, logos and follow-ups included.
         </p>
       </div>
 

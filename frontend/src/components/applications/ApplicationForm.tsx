@@ -99,7 +99,7 @@ export function ApplicationForm() {
           label="Website"
           htmlFor="company_domain"
           error={errors.company_domain?.message}
-          hint="Optional — sharpens the logo match."
+          hint="Optional, sharpens the logo match."
         >
           <Input id="company_domain" placeholder="stripe.com" autoComplete="off" aria-invalid={!!errors.company_domain} {...register('company_domain')} />
         </Field>
@@ -119,7 +119,7 @@ export function ApplicationForm() {
           label="Job posting"
           htmlFor="job_url"
           error={errors.job_url?.message}
-          hint="Optional — the link to the listing, so you can find it again."
+          hint="Optional, the link to the listing so you can find it again."
           className="sm:col-span-2"
         >
           <Input

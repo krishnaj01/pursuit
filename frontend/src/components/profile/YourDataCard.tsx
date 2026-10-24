@@ -41,7 +41,7 @@ export function YourDataCard() {
       <CardContent className="flex flex-col gap-6">
         <div>
           <h3 className="text-lg font-semibold">Your data</h3>
-          <p className="text-sm text-muted">It's yours — take a copy or remove it whenever you like.</p>
+          <p className="text-sm text-muted">It's yours, take a copy or remove it whenever you like.</p>
         </div>
 
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-raised p-4 sm:flex-row sm:items-center sm:justify-between">
