@@ -58,7 +58,7 @@ def edit_event(app: Application, event: StageEvent, update: StageEventUpdate, to
 
 def delete_event(app: Application, event: StageEvent, today: date) -> None:
     if _is_initial(app, event):
-        raise ReminderError("The first entry can't be deleted — delete the application instead")
+        raise ReminderError("The first entry can't be deleted, delete the application instead")
 
     was_latest = _is_latest(app, event)
     app.stage_events.remove(event)

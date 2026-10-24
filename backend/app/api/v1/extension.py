@@ -26,7 +26,7 @@ async def create_token(payload: ApiTokenCreate, db: DbSession, user: SessionUser
     if (active_count or 0) >= MAX_ACTIVE_TOKENS:
         raise HTTPException(
             status.HTTP_409_CONFLICT,
-            detail="Too many connected extensions — disconnect one from your profile first",
+            detail="Too many connected extensions, disconnect one from your profile first",
         )
     token, prefix, token_hash = generate_api_token()
     api_token = ApiToken(user_id=user.id, name=payload.name, prefix=prefix, token_hash=token_hash)
