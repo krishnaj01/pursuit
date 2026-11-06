@@ -7,6 +7,7 @@ import { useGoogleSignIn } from '@/api/auth'
 import { ExtensionPromo } from '@/components/auth/ExtensionPromo'
 import { PrivacyNote } from '@/components/auth/PrivacyNote'
 import { ProductShowcase } from '@/components/auth/ProductShowcase'
+import { VideoShowcase } from '@/components/auth/VideoShowcase'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { Logo } from '@/components/layout/Logo'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
@@ -87,6 +88,8 @@ export function LoginPage() {
         </div>
 
         <ProductShowcase />
+
+        <VideoShowcase />
 
         <ExtensionPromo />
 
