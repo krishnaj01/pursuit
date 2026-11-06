@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from sqlalchemy import func, select
 
@@ -90,3 +90,29 @@ async def test_digest_is_built_once_on_the_first_visit_of_the_day(client, monkey
     assert next_day["unread_count"] == 1
     assert len(next_day["items"]) == 2
     assert len(next_day["items"][0]["application_ids"]) == 2
+
+
+async def test_first_visit_of_the_day_deletes_digests_older_than_three_days(client, db, user):
+    from app.services.notifications import RETENTION_DAYS
+
+    today = today_in(user.timezone)
+    for age in range(6):  # today and the five days before it
+        db.add(
+            Notification(
+                user_id=user.id,
+                for_date=today - timedelta(days=age),
+                application_ids=[],
+                title=f"{age} days ago",
+                body="",
+            )
+        )
+    await db.commit()
+
+    items = (await client.get("/api/v1/notifications")).json()["items"]
+
+    kept = sorted((today - date.fromisoformat(n["for_date"])).days for n in items)
+    assert kept == list(range(RETENTION_DAYS))  # today, yesterday, the day before
+    remaining = await db.scalar(
+        select(func.count()).select_from(Notification).where(Notification.user_id == user.id)
+    )
+    assert remaining == RETENTION_DAYS

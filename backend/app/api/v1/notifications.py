@@ -7,7 +7,7 @@ from sqlalchemy import func, select, update
 from app.core.deps import CurrentUser, DbSession
 from app.models import Notification, User
 from app.schemas.notification import NotificationList, NotificationOut
-from app.services.notifications import generate_for_user
+from app.services.notifications import generate_for_user, prune_old
 from app.services.reminders import today_in
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
@@ -17,9 +17,10 @@ HISTORY_LIMIT = 30
 
 @router.get("", response_model=NotificationList)
 async def list_notifications(db: DbSession, user: CurrentUser):
-    # Build today's reminder digest on the user's first visit of their day only.
+    # On the user's first visit of their day only: clear out old digests, then build today's.
     today = today_in(user.timezone)
     if user.last_digest_check_on != today:
+        await prune_old(db, user.id, today)
         await generate_for_user(db, user)
         await db.execute(update(User).where(User.id == user.id).values(last_digest_check_on=today))
         await db.commit()

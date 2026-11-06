@@ -1,11 +1,15 @@
-from datetime import date
+from datetime import date, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CLOSED_STAGES, Application, Notification, User
 from app.services.reminders import today_in
+
+# Digests are kept for this many days (today included), then deleted so the inbox doesn't
+# grow forever: with 3, a digest from Monday is gone on Thursday.
+RETENTION_DAYS = 3
 
 
 def _digest_text(apps: list[Application]) -> tuple[str, str]:
@@ -28,6 +32,17 @@ async def due_applications(session: AsyncSession, user_id, today: date) -> list[
         .order_by(Application.next_reminder_on, Application.company_name)
     )
     return list(result)
+
+
+async def prune_old(session: AsyncSession, user_id, today: date) -> int:
+    """Delete the user's digests older than the retention window. Returns how many went."""
+    result = await session.execute(
+        delete(Notification).where(
+            Notification.user_id == user_id,
+            Notification.for_date <= today - timedelta(days=RETENTION_DAYS),
+        )
+    )
+    return result.rowcount or 0
 
 
 async def generate_for_user(session: AsyncSession, user: User) -> Notification | None:
