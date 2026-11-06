@@ -75,14 +75,20 @@ export function LoginPage() {
           </div>
         </div>
 
-        <div className="grid w-full gap-4 sm:grid-cols-3">
+        {/* Phones and small tablets: one card with compact rows. From md up: three cards. */}
+        <div className="w-full divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface/80 shadow-md backdrop-blur md:grid md:grid-cols-3 md:gap-4 md:divide-y-0 md:overflow-visible md:rounded-none md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none">
           {FEATURES.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-xl border border-border bg-surface/80 p-5 text-left shadow-md backdrop-blur">
-              <div className="mb-4 grid size-9 place-items-center rounded-lg bg-accent-soft text-accent">
+            <div
+              key={title}
+              className="flex items-start gap-4 px-4 py-4 text-left md:block md:rounded-xl md:border md:border-border md:bg-surface/80 md:p-5 md:shadow-md md:backdrop-blur"
+            >
+              <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent-soft text-accent md:mb-4">
                 <Icon className="size-4" />
               </div>
-              <p className="font-display font-semibold">{title}</p>
-              <p className="mt-1 text-sm text-muted">{body}</p>
+              <div className="min-w-0">
+                <p className="font-display font-semibold">{title}</p>
+                <p className="mt-0.5 text-sm text-muted md:mt-1">{body}</p>
+              </div>
             </div>
           ))}
         </div>
